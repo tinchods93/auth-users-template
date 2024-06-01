@@ -1,0 +1,31 @@
+Resources:
+  # Cada user pool puede tener varios grupos
+  # los grupos son conjuntos de usuarios que tienen permisos específicos
+  UserPoolGroupAdmin:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: Admin
+      UserPoolId: !Ref UserPool
+      RoleArn: !GetAtt AdminRole.Arn
+
+  # en este caso, el grupo admin tiene permisos para invocar cualquier lambda
+  AdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AdminRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cognito-idp.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AdminPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: '*'

@@ -1,0 +1,35 @@
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: my-user-pool
+      Schema:
+        - AttributeDataType: String
+          Name: role
+      AutoVerifiedAttributes:
+        - email
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AliasAttributes:
+        - email
+          # - Name: verified_phone_number
+          #   Priority: 2
+
+  # Cada user pool puede tener varios clientes
+  # los clientes son las aplicaciones que se conectan al user pool
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: my-user-pool-client
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH # esto significa que el admin puede crear usuarios sin necesidad de un flujo de autenticación
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+      RefreshTokenValidity: 10 # days
+      IdTokenValidity: 24 # days
