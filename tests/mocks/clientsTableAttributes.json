@@ -1,0 +1,15 @@
+{
+  "hashKeyName": "pk",
+  "sortKeyName": "sk",
+  "sortAttributeType": "S",
+  "attributeDefinitions": [
+    {
+      "AttributeName": "pk",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "sk",
+      "AttributeType": "S"
+    }
+  ]
+}

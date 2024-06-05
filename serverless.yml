@@ -54,6 +54,7 @@ provider:
     USER_CLIENT_ID: !Ref UserPoolClient
     ADMIN_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.Admin}
     USER_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.User}
+    USERS_TABLE_NAME : ${file(resources/index.json):table.usersLicenses}
 
 package:
   individually: false
@@ -73,8 +74,9 @@ resources:
   - ${file(resources/cognito/groups/adminGroup.yml)}
   - ${file(resources/cognito/groups/userGroup.yml)}
   - ${file(resources/authorizer/authorizer.yml)}
-  # - ${file(resources/cognito/licences/standardTier.yml)}
-  # - ${file(resources/cognito/licences/proTier.yml)}
+  - ${file(resources/tables/table.yml)}
+  # - ${file(resources/cognito/licenses/standardTier.yml)}
+  # - ${file(resources/cognito/licenses/proTier.yml)}
 
 functions:
   - ${file(src/functions.yml)}

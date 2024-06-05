@@ -6,6 +6,8 @@ import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
 } from '../services/interfaces/usersServiceInterface';
+import { forgotPasswordInputSchema } from '../schemas/zodSchemas/forgotPasswordInputSchema';
+import ZodSchemaValidation from '../schemas/ZodSchema';
 
 @injectable()
 export default class ForgotPasswordUserAction
@@ -23,9 +25,9 @@ export default class ForgotPasswordUserAction
         commandPayload
       );
 
-      const payload = {
-        username: commandPayload.parameters.username,
-      };
+      const payload = new ZodSchemaValidation(
+        forgotPasswordInputSchema
+      ).validate(commandPayload.parameters);
 
       console.log(
         'MARTIN_LOG=> ForgotPasswordUserAction=>execute=>payload: ',

@@ -6,6 +6,8 @@ import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
 } from '../services/interfaces/usersServiceInterface';
+import ZodSchemaValidation from '../schemas/ZodSchema';
+import { getUserProfileInputSchema } from '../schemas/zodSchemas/getUserProfileInputSchema';
 
 @injectable()
 export default class GetUserProfileAction
@@ -23,18 +25,13 @@ export default class GetUserProfileAction
   ) => {
     try {
       console.log(
-        'MARTIN_LOG=>GetUserProfileAction=>execute=>commandPayload: ',
-        commandPayload
-      );
-
-      console.log(
-        'MARTIN_LOG=>GetUserProfileAction=>execute=>commandMeta: ',
+        'MARTIN_LOG=>GetUserProfileAction=>execute=> input: ',
         JSON.stringify({ commandMeta, rawMeta })
       );
 
-      const payload = commandPayload.parameters;
-
-      // TODO: VALIDATE PARAMETERS
+      const payload = new ZodSchemaValidation(
+        getUserProfileInputSchema
+      ).validate(commandPayload.parameters);
 
       console.log(
         'MARTIN_LOG=>GetUserProfileAction=>execute=>payload: ',

@@ -2,7 +2,6 @@ import {
   CognitoIdentityProviderClient,
   AdminCreateUserCommand,
   CognitoIdentityProvider,
-  AdminCreateUserCommandOutput,
   ForgotPasswordCommandOutput,
   ConfirmForgotPasswordCommandOutput,
   AdminRespondToAuthChallengeCommandOutput,
@@ -17,6 +16,7 @@ import {
   AdminGetUserCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoRepositoryInterface } from './interfaces/cognitoServiceInterface';
+import { CognitoUserType } from './types/cognitoServiceTypes';
 
 const USER_POOL_ID = process.env.USER_POOL_ID as string;
 const USER_CLIENT_ID = process.env.USER_CLIENT_ID as string;
@@ -55,7 +55,7 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     temporaryPassword: string,
     email: string,
     role: string
-  ): Promise<AdminCreateUserCommandOutput> {
+  ): Promise<CognitoUserType> {
     try {
       const command = new AdminCreateUserCommand({
         UserPoolId: USER_POOL_ID,
@@ -84,7 +84,9 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
         response
       );
 
-      return response;
+      if (!response.User) throw new Error('Error al crear el usuario');
+
+      return response.User;
     } catch (error) {
       console.error('Error al crear el usuario:', error);
       throw error;

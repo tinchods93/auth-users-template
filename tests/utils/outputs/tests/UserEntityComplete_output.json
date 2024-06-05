@@ -1,0 +1,37 @@
+{
+  "pk": "USER#user123",
+  "sk": "USER#user123",
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "type": "USER",
+  "user_id": "user123",
+  "role": "User",
+  "personal_data": {
+    "name": "Test",
+    "last_name": "User",
+    "address": "123 Test St",
+    "dni": "12345678",
+    "phone_number": "1234567890",
+    "birth_date": "dayjs().unix()"
+  },
+  "office_data": {
+    "office_id": "office123",
+    "name": "Main Office",
+    "address": "456 Office St",
+    "cuit": "20-12345678-9",
+    "phone_number": "0987654321",
+    "email": "office@example.com"
+  },
+  "office_id": "office123",
+  "parent_id": "parent123",
+  "license": {
+    "license_type": "standard",
+    "status": "active",
+    "limits": {
+      "max_users": 1,
+      "max_projects": 10
+    },
+    "creation_date": 1717619829,
+    "expiration_date": 1717619829
+  }
+}

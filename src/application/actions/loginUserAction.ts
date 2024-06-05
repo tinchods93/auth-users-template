@@ -6,6 +6,8 @@ import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
 } from '../services/interfaces/usersServiceInterface';
+import ZodSchemaValidation from '../schemas/ZodSchema';
+import { loginUserInputSchema } from '../schemas/zodSchemas/loginUserInputSchema';
 
 @injectable()
 export default class LoginUserAction implements ApplicationActionInterface {
@@ -16,11 +18,18 @@ export default class LoginUserAction implements ApplicationActionInterface {
 
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
-      const payload = commandPayload.body;
+      console.log(
+        'MARTIN_LOG=> LoginUserAction=>execute=>commandPayload: ',
+        commandPayload
+      );
+
+      const payload = new ZodSchemaValidation(loginUserInputSchema).validate(
+        commandPayload.body
+      );
 
       console.log('MARTIN_LOG=>LoginUserAction=>execute=>payload: ', payload);
 
-      const response = await this.usersService.authenticate(payload);
+      const response = await this.usersService.login(payload);
 
       return {
         status: 200,

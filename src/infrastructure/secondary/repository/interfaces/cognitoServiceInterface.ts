@@ -1,11 +1,11 @@
 import {
-  AdminCreateUserCommandOutput,
   AdminGetUserCommandOutput,
   AdminInitiateAuthCommandOutput,
   AdminRespondToAuthChallengeCommandOutput,
   ConfirmForgotPasswordCommandOutput,
   ForgotPasswordCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
+import { CognitoUserType } from '../types/cognitoServiceTypes';
 
 export const COGNITO_REPOSITORY_TOKEN = Symbol('CognitoRepositoryToken');
 
@@ -15,7 +15,7 @@ export interface CognitoRepositoryInterface {
     temporaryPassword: string,
     email: string,
     role: string
-  ): Promise<AdminCreateUserCommandOutput>;
+  ): Promise<CognitoUserType>;
   authenticateUser(
     username: string,
     password: string

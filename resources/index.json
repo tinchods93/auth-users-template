@@ -1,4 +1,7 @@
 {
+    "table": {
+        "usersLicenses": "${self:custom.stackPrefix}-usersLicensesTable"
+    },
     "userPool": {
         "name": "${self:custom.stackPrefix}-userPool"
     },

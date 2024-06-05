@@ -6,6 +6,8 @@ import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
 } from '../services/interfaces/usersServiceInterface';
+import { registerUserInputSchema } from '../schemas/zodSchemas/registerUserInputSchema';
+import ZodSchemaValidation from '../schemas/ZodSchema';
 
 @injectable()
 export default class RegisterUserAction implements ApplicationActionInterface {
@@ -21,14 +23,16 @@ export default class RegisterUserAction implements ApplicationActionInterface {
         commandPayload
       );
 
-      const payload = commandPayload.body;
+      const payload = new ZodSchemaValidation(registerUserInputSchema).validate(
+        commandPayload.body
+      );
 
       console.log(
         'MARTIN_LOG=>registerUserAction=>execute=>payload: ',
         payload
       );
 
-      const response = await this.usersService.create(payload);
+      const response = await this.usersService.register(payload);
 
       return {
         status: 201,

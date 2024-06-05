@@ -6,6 +6,8 @@ import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
 } from '../services/interfaces/usersServiceInterface';
+import { newPasswordChallengeInputSchema } from '../schemas/zodSchemas/newPasswordChallengeInputSchema';
+import ZodSchemaValidation from '../schemas/ZodSchema';
 
 @injectable()
 export default class NewPasswordChallengeUserAction
@@ -23,11 +25,13 @@ export default class NewPasswordChallengeUserAction
         commandPayload
       );
 
-      const payload = {
+      const payload = new ZodSchemaValidation(
+        newPasswordChallengeInputSchema
+      ).validate({
         username: commandPayload.parameters.username,
         newPassword: commandPayload.body.newPassword,
         session: commandPayload.body.session,
-      };
+      });
 
       console.log(
         'MARTIN_LOG=>NewPasswordChallengeUserAction=>execute=>payload: ',
