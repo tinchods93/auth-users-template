@@ -1,5 +1,6 @@
 - Effect: Allow
   Action:
     - cognito-idp:AdminCreateUser
+    - cognito-idp:AdminAddUserToGroup
     - cognito-idp:AdminSetUserPassword
   Resource: !GetAtt UserPool.Arn

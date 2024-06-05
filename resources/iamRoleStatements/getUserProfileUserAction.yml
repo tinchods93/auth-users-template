@@ -1,0 +1,4 @@
+- Effect: Allow
+  Action:
+    - cognito-idp:AdminGetUser
+  Resource: !GetAtt UserPool.Arn

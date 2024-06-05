@@ -3,4 +3,5 @@ export type HandlerCommandType = {
   parameters?: any;
   stage?: any;
   body?: any;
+  headers?: any;
 };

@@ -1,5 +1,6 @@
 import {
   AdminCreateUserCommandOutput,
+  AdminGetUserCommandOutput,
   AdminInitiateAuthCommandOutput,
   AdminRespondToAuthChallengeCommandOutput,
   ConfirmForgotPasswordCommandOutput,
@@ -30,4 +31,5 @@ export interface CognitoRepositoryInterface {
     code: string,
     newPassword: string
   ): Promise<ConfirmForgotPasswordCommandOutput>;
+  getUserProfile(username: string): Promise<AdminGetUserCommandOutput>;
 }

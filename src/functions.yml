@@ -8,11 +8,13 @@ registerUser:
   iamRoleStatementsName: ${file(resources/index.json):functions.registerUserAction}
   iamRoleStatements: ${file(resources/iamRoleStatements/registerUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  environment:
+    REQUIRED_TOKEN_SCOPES: 'users.create'
   events:
-    - httpApi:
+    - http:
         path: /users/signup
         method: post
-        cors: true
+        # cors: true
 
 loginUser:
   handler: src/infrastructure/primary/handlers/loginUser.handler
@@ -25,10 +27,10 @@ loginUser:
   iamRoleStatements: ${file(resources/iamRoleStatements/loginUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
-    - httpApi:
+    - http:
         path: /users/signin
         method: post
-        cors: true
+        # cors: true
 
 newPasswordChallenge:
   handler: src/infrastructure/primary/handlers/newPasswordChallenge.handler
@@ -41,10 +43,10 @@ newPasswordChallenge:
   iamRoleStatements: ${file(resources/iamRoleStatements/newPasswordChallengeUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
-    - httpApi:
+    - http:
         path: /users/{username}/password
         method: put
-        cors: true
+        # cors: true
 
 forgotPassword:
   handler: src/infrastructure/primary/handlers/forgotPassword.handler
@@ -57,10 +59,10 @@ forgotPassword:
   iamRoleStatements: ${file(resources/iamRoleStatements/forgotPasswordUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
-    - httpApi:
+    - http:
         path: /users/{username}/password/forgot
         method: post
-        cors: true
+        # cors: true
 
 confirmForgotPassword:
   handler: src/infrastructure/primary/handlers/confirmForgotPassword.handler
@@ -73,7 +75,28 @@ confirmForgotPassword:
   iamRoleStatements: ${file(resources/iamRoleStatements/confirmForgotPasswordUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
-    - httpApi:
+    - http:
         path: /users/{username}/password/forgot/confirm
         method: post
-        cors: true
+        # cors: true
+
+getUserProfile:
+  handler: src/infrastructure/primary/handlers/getUserProfile.handler
+  description: 'Get user profile user action'
+  name: ${file(resources/index.json):functions.getUserProfileUserAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.getUserProfileUserAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/getUserProfileUserAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  environment:
+    REQUIRED_TOKEN_SCOPES: 'users.profile'
+  events:
+    - http:
+        path: /users/{username}/profile
+        method: get
+        # cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }

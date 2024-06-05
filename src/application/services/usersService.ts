@@ -39,7 +39,7 @@ export default class UsersService implements UsersServiceInterface {
 
     if (response.AuthenticationResult) {
       return {
-        accessToken: response.AuthenticationResult?.AccessToken,
+        accessToken: response.AuthenticationResult?.IdToken,
         refreshToken: response.AuthenticationResult?.RefreshToken,
       };
     }
@@ -65,7 +65,7 @@ export default class UsersService implements UsersServiceInterface {
 
     if (response.AuthenticationResult) {
       return {
-        accessToken: response.AuthenticationResult?.AccessToken,
+        accessToken: response.AuthenticationResult?.IdToken,
         refreshToken: response.AuthenticationResult?.RefreshToken,
       };
     }
@@ -94,5 +94,11 @@ export default class UsersService implements UsersServiceInterface {
     );
 
     return response;
+  }
+
+  async getUserProfile(payload: { username: string }) {
+    const { username } = payload;
+
+    return this.cognitoRepository.getUserProfile(username);
   }
 }

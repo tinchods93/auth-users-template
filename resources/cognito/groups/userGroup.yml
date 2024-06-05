@@ -1,18 +1,18 @@
 Resources:
   # Cada user pool puede tener varios grupos
   # los grupos son conjuntos de usuarios que tienen permisos específicos
-  UserPoolGroupProTier:
+  UserPoolGroupUser:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
-      GroupName: ProTier
+      GroupName: User
       UserPoolId: !Ref UserPool
-      RoleArn: !GetAtt ProTierRole.Arn
+      RoleArn: !GetAtt UserRole.Arn
 
-  # en este caso, el grupo ProTier tiene permisos para invocar cualquier lambda
-  ProTierRole:
+  # en este caso, el grupo User tiene permisos para invocar cualquier lambda
+  UserRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: ProTierRole
+      RoleName: UserRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -21,7 +21,7 @@ Resources:
               Service: cognito-idp.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: ProTierPolicy
+        - PolicyName: UserPolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:

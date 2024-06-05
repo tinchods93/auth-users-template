@@ -1,5 +1,9 @@
 import { HandlerCommandType } from '../../../infrastructure/primary/handlers/types/handlerTypes';
 
 export interface ApplicationActionInterface {
-  execute(commandPayload: HandlerCommandType): Promise<any>;
+  execute(
+    commandPayload: HandlerCommandType,
+    commandMeta?: any,
+    rawMeta?: any
+  ): Promise<any>;
 }

@@ -1,9 +1,16 @@
 {
+    "userPool": {
+        "name": "${self:custom.stackPrefix}-userPool"
+    },
+    "userPoolClient": {
+        "name": "${self:custom.stackPrefix}-userPoolClient"
+    },
     "functions": {
         "registerUserAction": "${self:custom.stackPrefix}-registerUserAction",
         "loginUserAction": "${self:custom.stackPrefix}-loginUserAction",
         "newPasswordChallengeUserAction": "${self:custom.stackPrefix}-newPasswordChallengeUserAction",
         "forgotPasswordUserAction": "${self:custom.stackPrefix}-forgotPasswordUserAction",
-        "confirmForgotPasswordUserAction": "${self:custom.stackPrefix}-confirmForgotPasswordUserAction"
+        "confirmForgotPasswordUserAction": "${self:custom.stackPrefix}-confirmForgotPasswordUserAction",
+        "getUserProfileUserAction": "${self:custom.stackPrefix}-getUserProfileUserAction"
     }
 }

@@ -7,6 +7,9 @@ custom:
   config: ${file(config/index.js)}
   stackPrefix: ${self:service}-${self:provider.stage}
 
+  userPoolId: !Ref UserPool
+  userPoolClientId: !Ref UserPoolClient
+
   # Prune
   prune:
     automatic: true
@@ -49,6 +52,8 @@ provider:
     OWNER_PROJECT_NAME: 'Protoprime'
     USER_POOL_ID: !Ref UserPool
     USER_CLIENT_ID: !Ref UserPoolClient
+    ADMIN_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.Admin}
+    USER_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.User}
 
 package:
   individually: false
@@ -65,9 +70,11 @@ plugins:
 
 resources:
   - ${file(resources/cognito/cognito.yml)}
-  - ${file(resources/cognito/adminGroup.yml)}
-  - ${file(resources/cognito/licences/standardTier.yml)}
-  - ${file(resources/cognito/licences/proTier.yml)}
+  - ${file(resources/cognito/groups/adminGroup.yml)}
+  - ${file(resources/cognito/groups/userGroup.yml)}
+  - ${file(resources/authorizer/authorizer.yml)}
+  # - ${file(resources/cognito/licences/standardTier.yml)}
+  # - ${file(resources/cognito/licences/proTier.yml)}
 
 functions:
   - ${file(src/functions.yml)}

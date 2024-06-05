@@ -2,7 +2,7 @@ Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: my-user-pool
+      UserPoolName: ${file(resources/index.json):userPool.name}
       Schema:
         - AttributeDataType: String
           Name: role
@@ -22,7 +22,7 @@ Resources:
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      ClientName: my-user-pool-client
+      ClientName: ${file(resources/index.json):userPoolClient.name}
       UserPoolId: !Ref UserPool
       GenerateSecret: false
       ExplicitAuthFlows:

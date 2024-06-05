@@ -5,6 +5,7 @@ import { commandMapper } from 'rebased/handler';
 import { HandlerCommandType } from './types/handlerTypes';
 import diContainer from '../../../diContainer';
 import ConfirmForgotPasswordUserAction from '../../../application/actions/confirmForgotPasswordUserAction';
+import validateTokenScopes from '../utils/validateTokenScopes';
 
 export const handler = async (command: HandlerCommandType, context: any) => {
   const action = diContainer.resolve(ConfirmForgotPasswordUserAction);

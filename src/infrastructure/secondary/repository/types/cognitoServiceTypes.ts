@@ -1,7 +1,6 @@
 export type CognitoAuthenticationResponseType = {
-  idToken?: string;
-  refreshToken?: string;
   accessToken?: string;
+  refreshToken?: string;
   challengeName?: string;
   challengeParameters?: object;
   session?: string;

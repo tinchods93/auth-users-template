@@ -11,6 +11,10 @@ import {
   AdminRespondToAuthChallengeCommand,
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
+  AdminAddUserToGroupCommand,
+  AdminAddUserToGroupCommandOutput,
+  AdminGetUserCommand,
+  AdminGetUserCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoRepositoryInterface } from './interfaces/cognitoServiceInterface';
 
@@ -73,6 +77,8 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
 
       const response = await this.client.send(command);
 
+      await this.addUserToGroup(username, role);
+
       console.log(
         'MARTIN_LOG=> CognitoRepository=>createUser=>response: ',
         response
@@ -81,6 +87,54 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
       return response;
     } catch (error) {
       console.error('Error al crear el usuario:', error);
+      throw error;
+    }
+  }
+
+  async addUserToGroup(
+    username: string,
+    group: string
+  ): Promise<AdminAddUserToGroupCommandOutput> {
+    // Implementar agregar usuario a grupo
+    console.log('MARTIN_LOG=> CognitoRepository=>addUserToGroup=>', {
+      username,
+      group,
+    });
+
+    const command = new AdminAddUserToGroupCommand({
+      GroupName: group,
+      Username: username,
+      UserPoolId: USER_POOL_ID,
+    }).input;
+
+    const response = await this.cognito.adminAddUserToGroup(command);
+
+    // const response = await this.client.send(command);
+
+    console.log(
+      'MARTIN_LOG=> CognitoRepository=>addUserToGroup=>response: ',
+      response
+    );
+    return response;
+  }
+
+  async getUserProfile(username: string): Promise<AdminGetUserCommandOutput> {
+    try {
+      const params = new AdminGetUserCommand({
+        UserPoolId: USER_POOL_ID,
+        Username: username,
+      }).input;
+
+      const response = await this.cognito.adminGetUser(params);
+
+      console.log(
+        'MARTIN_LOG=> CognitoRepository=>getUserProfile=>response: ',
+        response
+      );
+
+      return response;
+    } catch (error) {
+      console.error('Error during get user profile:', error);
       throw error;
     }
   }

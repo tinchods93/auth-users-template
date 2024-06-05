@@ -1,13 +1,15 @@
 import 'reflect-metadata';
+import jwt from 'jsonwebtoken';
 import commandInput from 'rebased/handler/input/commandApi';
 import commandOutput from 'rebased/handler/output/commandApi';
 import { commandMapper } from 'rebased/handler';
 import { HandlerCommandType } from './types/handlerTypes';
 import diContainer from '../../../diContainer';
-import RegisterUserAction from '../../../application/actions/registerUserAction';
+import GetUserProfileAction from '../../../application/actions/getUserProfileAction';
 import validateTokenScopes from '../utils/validateTokenScopes';
 
 export const handler = async (command: HandlerCommandType, context: any) => {
+  console.log('MARTIN_LOG=> inputs', { command, context });
   const token = command.headers.Authorization;
 
   console.log('MARTIN_LOG=> validatingTokenScopes...');
@@ -19,8 +21,7 @@ export const handler = async (command: HandlerCommandType, context: any) => {
   }
   console.log('MARTIN_LOG=> validatingTokenScopes...');
 
-  const action = diContainer.resolve(RegisterUserAction);
-  console.log('MARTIN_LOG=> handler=>action=> ', action);
+  const action = diContainer.resolve(GetUserProfileAction);
 
   return commandMapper(
     { command, context },
