@@ -1,3 +1,5 @@
+import { ConditionInitializer } from 'dynamoose/dist/Condition';
+
 export const TABLE_SERVICE_TOKEN = Symbol('TableServiceInterface');
 
 export interface TableServiceInterface {
@@ -7,5 +9,10 @@ export interface TableServiceInterface {
     type: string;
     [key: string]: any;
   }): Promise<any>;
-  query(params: { query: any; options?: any }): Promise<any>;
+  query(params: {
+    query: ConditionInitializer;
+    options?: {
+      using_index?: string;
+    };
+  }): Promise<any[] | undefined>;
 }

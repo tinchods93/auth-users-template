@@ -10,7 +10,7 @@ import {
 export const USERS_SERVICE_TOKEN = Symbol('UsersServiceToken');
 
 export interface UsersServiceInterface {
-  register(user: UserServiceRegisterInputType): Promise<any>;
+  register(payload: UserServiceRegisterInputType): Promise<any>;
   login(
     payload: UserServiceLoginInputType
   ): Promise<CognitoAuthenticationResponseType>;
