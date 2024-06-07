@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from './interface/applicationActionInterface';
+import { ApplicationActionInterface } from './interfaces/applicationActionInterface';
 import { HandlerCommandType } from '../../infrastructure/primary/handlers/types/handlerTypes';
 import {
   USERS_SERVICE_TOKEN,
@@ -24,16 +24,9 @@ export default class LoginUserAction implements ApplicationActionInterface {
 
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
-      console.log(
-        'MARTIN_LOG=> LoginUserAction=>execute=>commandPayload: ',
-        commandPayload
-      );
-
       const payload = new ZodSchemaValidation(loginUserInputSchema).validate(
         commandPayload.body
       );
-
-      console.log('MARTIN_LOG=>LoginUserAction=>execute=>payload: ', payload);
 
       const response = await this.usersService.login(payload);
 

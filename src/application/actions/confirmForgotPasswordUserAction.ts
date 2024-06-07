@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from './interface/applicationActionInterface';
+import { ApplicationActionInterface } from './interfaces/applicationActionInterface';
 import { HandlerCommandType } from '../../infrastructure/primary/handlers/types/handlerTypes';
 import {
   USERS_SERVICE_TOKEN,
@@ -26,11 +26,6 @@ export default class ConfirmForgotPasswordUserAction
 
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
-      console.log(
-        'MARTIN_LOG=>ForgotPasswordUserAction=>execute=>commandPayload: ',
-        commandPayload
-      );
-
       const payload = new ZodSchemaValidation(
         confirmForgotPasswordInputSchema
       ).validate({
@@ -38,11 +33,6 @@ export default class ConfirmForgotPasswordUserAction
         newPassword: commandPayload.body.newPassword,
         confirmationCode: commandPayload.body.confirmationCode,
       });
-
-      console.log(
-        'MARTIN_LOG=> ForgotPasswordUserAction=>execute=>payload: ',
-        payload
-      );
 
       const response = await this.usersService.confirmForgotPassword(payload);
 

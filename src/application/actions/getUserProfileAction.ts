@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from './interface/applicationActionInterface';
+import { ApplicationActionInterface } from './interfaces/applicationActionInterface';
 import { HandlerCommandType } from '../../infrastructure/primary/handlers/types/handlerTypes';
 import {
   USERS_SERVICE_TOKEN,
@@ -24,25 +24,11 @@ export default class GetUserProfileAction
     this.actionResponse = new ActionResponse();
   }
 
-  public execute = async (
-    commandPayload: HandlerCommandType,
-    commandMeta,
-    rawMeta
-  ) => {
+  public execute = async (commandPayload: HandlerCommandType) => {
     try {
-      console.log(
-        'MARTIN_LOG=>GetUserProfileAction=>execute=> input: ',
-        JSON.stringify({ commandMeta, rawMeta })
-      );
-
       const payload = new ZodSchemaValidation(
         getUserProfileInputSchema
       ).validate(commandPayload.parameters);
-
-      console.log(
-        'MARTIN_LOG=>GetUserProfileAction=>execute=>payload: ',
-        payload
-      );
 
       const response = await this.usersService.getUserProfile(payload);
 
