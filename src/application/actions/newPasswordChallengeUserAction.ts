@@ -8,15 +8,21 @@ import {
 } from '../services/interfaces/usersServiceInterface';
 import { newPasswordChallengeInputSchema } from '../schemas/zodSchemas/newPasswordChallengeInputSchema';
 import ZodSchemaValidation from '../schemas/ZodSchema';
+import { ActionResponseInterface } from '../entities/interfaces/actionResponseInterface';
+import ActionResponse from '../entities/actionResponse';
 
 @injectable()
 export default class NewPasswordChallengeUserAction
   implements ApplicationActionInterface
 {
+  private actionResponse: ActionResponseInterface;
+
   constructor(
     @inject(USERS_SERVICE_TOKEN)
     private usersService: UsersServiceInterface
-  ) {}
+  ) {
+    this.actionResponse = new ActionResponse();
+  }
 
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
@@ -40,18 +46,15 @@ export default class NewPasswordChallengeUserAction
 
       const response = await this.usersService.changePassword(payload);
 
-      return {
-        status: 200,
-        body: response,
-      };
+      return this.actionResponse.success({
+        statusCode: StatusCodes.OK,
+        data: response,
+      });
     } catch (error) {
-      return {
-        status: error.status ?? StatusCodes.INTERNAL_SERVER_ERROR,
-        body: {
-          message: error.message,
-          error,
-        },
-      };
+      return this.actionResponse.error({
+        statusCode: error.status ?? StatusCodes.INTERNAL_SERVER_ERROR,
+        data: error,
+      });
     }
   };
 }
