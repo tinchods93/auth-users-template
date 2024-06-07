@@ -8,13 +8,19 @@ import {
 } from '../services/interfaces/usersServiceInterface';
 import { registerUserInputSchema } from '../schemas/zodSchemas/registerUserInputSchema';
 import ZodSchemaValidation from '../schemas/ZodSchema';
+import ActionResponse from '../entities/actionResponse';
+import { ActionResponseInterface } from '../entities/interfaces/actionResponseInterface';
 
 @injectable()
 export default class RegisterUserAction implements ApplicationActionInterface {
+  private actionResponse: ActionResponseInterface;
+
   constructor(
     @inject(USERS_SERVICE_TOKEN)
     private usersService: UsersServiceInterface
-  ) {}
+  ) {
+    this.actionResponse = new ActionResponse();
+  }
 
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
@@ -34,18 +40,15 @@ export default class RegisterUserAction implements ApplicationActionInterface {
 
       const response = await this.usersService.register(payload);
 
-      return {
-        status: 201,
-        body: response,
-      };
+      return this.actionResponse.success({
+        statusCode: StatusCodes.CREATED,
+        data: response,
+      });
     } catch (error) {
-      return {
-        status: error.status ?? StatusCodes.INTERNAL_SERVER_ERROR,
-        body: {
-          message: error.message,
-          error,
-        },
-      };
+      return this.actionResponse.error({
+        statusCode: error.status ?? StatusCodes.INTERNAL_SERVER_ERROR,
+        data: error,
+      });
     }
   };
 }
