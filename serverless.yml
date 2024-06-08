@@ -1,11 +1,9 @@
-service: auth-users-${custom.serviceClientName}${env:developerStack, ''}
+service: auth-users-template${env:developerStack, ''}
 
 configValidationMode: off
 frameworkVersion: '>=3'
 
 custom:
-  # Al cambiar esto se debe cambiar el nombre del archivo de configuración
-  serviceClientName: template # por ejemplo: escribanos
 
   config: ${file(config/index.js)}
   stackPrefix: ${self:service}-${self:provider.stage}

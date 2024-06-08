@@ -14,6 +14,7 @@
         "newPasswordChallengeUserAction": "${self:custom.stackPrefix}-newPasswordChallengeUserAction",
         "forgotPasswordUserAction": "${self:custom.stackPrefix}-forgotPasswordUserAction",
         "confirmForgotPasswordUserAction": "${self:custom.stackPrefix}-confirmForgotPasswordUserAction",
-        "getUserProfileUserAction": "${self:custom.stackPrefix}-getUserProfileUserAction"
+        "getUserProfileUserAction": "${self:custom.stackPrefix}-getUserProfileUserAction",
+        "updateUserAction": "${self:custom.stackPrefix}-updateUserAction"
     }
 }

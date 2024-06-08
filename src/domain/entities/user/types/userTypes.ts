@@ -25,7 +25,7 @@ export type UserType = {
 };
 
 export type UserModifiableData = {
-  personal_data: UserPersonalData;
+  personal_data?: UserPersonalData;
   office_data?: OfficeData;
   parent_id?: string;
   office_id?: string;

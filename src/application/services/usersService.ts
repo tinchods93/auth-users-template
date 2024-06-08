@@ -1,4 +1,5 @@
 import { inject, injectable } from 'tsyringe';
+import { merge } from 'lodash';
 import { StatusCodes } from 'http-status-codes';
 import {
   AdminRespondToAuthChallengeCommandOutput,
@@ -317,12 +318,20 @@ export default class UsersService implements UsersServiceInterface {
         throw new Error('User not found');
       }
 
+      const {
+        pk,
+        sk,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        user_id: existingUserId,
+        ...existingPayload
+      } = existingUser;
+
       const response = await this.tableService.update({
         key: {
-          pk: existingUser.pk,
-          sk: existingUser.sk,
+          pk,
+          sk,
         },
-        payload: payloadForUpdate,
+        payload: merge(existingPayload, payloadForUpdate),
       });
 
       console.log(

@@ -26,7 +26,7 @@ export default class UserEntity implements UserEntityInterface {
 
   private role!: string;
 
-  private personal_data!: UserPersonalData;
+  private personal_data?: UserPersonalData;
 
   private office_data?: OfficeData;
 
