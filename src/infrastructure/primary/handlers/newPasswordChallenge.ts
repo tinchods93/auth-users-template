@@ -3,12 +3,11 @@ import commandInput from 'rebased/handler/input/commandApi';
 import commandOutput from 'rebased/handler/output/commandApi';
 import { commandMapper } from 'rebased/handler';
 import { HandlerCommandType } from './types/handlerTypes';
-import diContainer from '../../../diContainer';
-import NewPasswordChallengeUserAction from '../../../application/actions/newPasswordChallengeUserAction';
+import depsContainer from '../../../depsContainer';
+import NewPasswordChallengeUserAction from '../../../application/actions/userActions/newPasswordChallengeUserAction';
 
 export const handler = async (command: HandlerCommandType, context: any) => {
-  const action = diContainer.resolve(NewPasswordChallengeUserAction);
-  console.log('MARTIN_LOG=> handler=>action=> ', action);
+  const action = depsContainer.resolve(NewPasswordChallengeUserAction);
 
   return commandMapper(
     { command, context },

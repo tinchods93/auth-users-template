@@ -1,18 +1,18 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from './interfaces/applicationActionInterface';
-import { HandlerCommandType } from '../../infrastructure/primary/handlers/types/handlerTypes';
+import { ApplicationActionInterface } from '../interfaces/applicationActionInterface';
+import { HandlerCommandType } from '../../../infrastructure/primary/handlers/types/handlerTypes';
 import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
-} from '../services/interfaces/usersServiceInterface';
-import { forgotPasswordInputSchema } from '../schemas/zodSchemas/forgotPasswordInputSchema';
-import ZodSchemaValidation from '../schemas/ZodSchema';
-import ActionResponse from '../entities/actionResponse';
-import { ActionResponseInterface } from '../entities/interfaces/actionResponseInterface';
+} from '../../services/interfaces/usersServiceInterface';
+import ZodSchemaValidation from '../../schemas/ZodSchema';
+import { getUserProfileInputSchema } from '../../schemas/zodSchemas/getUserProfileInputSchema';
+import ActionResponse from '../../entities/actionResponse';
+import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
 
 @injectable()
-export default class ForgotPasswordUserAction
+export default class GetUserProfileAction
   implements ApplicationActionInterface
 {
   private actionResponse: ActionResponseInterface;
@@ -27,10 +27,10 @@ export default class ForgotPasswordUserAction
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
       const payload = new ZodSchemaValidation(
-        forgotPasswordInputSchema
+        getUserProfileInputSchema
       ).validate(commandPayload.parameters);
 
-      const response = await this.usersService.forgotPassword(payload);
+      const response = await this.usersService.getUserProfile(payload);
 
       return this.actionResponse.success({
         statusCode: StatusCodes.OK,

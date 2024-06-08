@@ -1,15 +1,15 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from './interfaces/applicationActionInterface';
-import { HandlerCommandType } from '../../infrastructure/primary/handlers/types/handlerTypes';
+import { ApplicationActionInterface } from '../interfaces/applicationActionInterface';
+import { HandlerCommandType } from '../../../infrastructure/primary/handlers/types/handlerTypes';
 import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
-} from '../services/interfaces/usersServiceInterface';
-import ZodSchemaValidation from '../schemas/ZodSchema';
-import { loginUserInputSchema } from '../schemas/zodSchemas/loginUserInputSchema';
-import { ActionResponseInterface } from '../entities/interfaces/actionResponseInterface';
-import ActionResponse from '../entities/actionResponse';
+} from '../../services/interfaces/usersServiceInterface';
+import ZodSchemaValidation from '../../schemas/ZodSchema';
+import { loginUserInputSchema } from '../../schemas/zodSchemas/loginUserInputSchema';
+import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
+import ActionResponse from '../../entities/actionResponse';
 
 @injectable()
 export default class LoginUserAction implements ApplicationActionInterface {

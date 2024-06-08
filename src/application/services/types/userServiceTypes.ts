@@ -1,4 +1,7 @@
-import { UserEntityType } from '../../../domain/entities/user/types/userTypes';
+import {
+  UserEntityType,
+  UserModifiableData,
+} from '../../../domain/entities/user/types/userTypes';
 
 export type UserServiceRegisterInputType = UserEntityType & {
   temporaryPassword: string;
@@ -28,3 +31,6 @@ export type UserServiceConfirmForgotPasswordInputType = {
 export type UsersServiceGetUserInputType = {
   user_id: string;
 };
+
+export type UsersServiceUpdateUserInputType = UsersServiceGetUserInputType &
+  UserModifiableData;

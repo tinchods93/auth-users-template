@@ -1,11 +1,15 @@
-service: auth-users-template${env:developerStack, ''}
+service: auth-users-${custom.serviceClientName}${env:developerStack, ''}
 
 configValidationMode: off
 frameworkVersion: '>=3'
 
 custom:
+  # Al cambiar esto se debe cambiar el nombre del archivo de configuración
+  serviceClientName: template # por ejemplo: escribanos
+
   config: ${file(config/index.js)}
   stackPrefix: ${self:service}-${self:provider.stage}
+
 
   userPoolId: !Ref UserPool
   userPoolClientId: !Ref UserPoolClient
@@ -13,10 +17,10 @@ custom:
   # Prune
   prune:
     automatic: true
-    prod: 10
-    develop: 1
+    prod: 3
     staging: 2
-    number: 2
+    develop: 1
+    number: 1
 
   # developDomain: e1-api-protoprime.click
   # prodDomain: api-protoprime.click
@@ -75,8 +79,6 @@ resources:
   - ${file(resources/cognito/groups/userGroup.yml)}
   - ${file(resources/authorizer/authorizer.yml)}
   - ${file(resources/tables/table.yml)}
-  # - ${file(resources/cognito/licenses/standardTier.yml)}
-  # - ${file(resources/cognito/licenses/proTier.yml)}
 
 functions:
   - ${file(src/functions.yml)}

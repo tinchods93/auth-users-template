@@ -3,13 +3,11 @@ import commandInput from 'rebased/handler/input/commandApi';
 import commandOutput from 'rebased/handler/output/commandApi';
 import { commandMapper } from 'rebased/handler';
 import { HandlerCommandType } from './types/handlerTypes';
-import diContainer from '../../../diContainer';
-import ConfirmForgotPasswordUserAction from '../../../application/actions/confirmForgotPasswordUserAction';
-import validateTokenScopes from '../utils/validateTokenScopes';
+import depsContainer from '../../../depsContainer';
+import ConfirmForgotPasswordUserAction from '../../../application/actions/userActions/confirmForgotPasswordUserAction';
 
 export const handler = async (command: HandlerCommandType, context: any) => {
-  const action = diContainer.resolve(ConfirmForgotPasswordUserAction);
-  console.log('MARTIN_LOG=> handler=>action=> ', action);
+  const action = depsContainer.resolve(ConfirmForgotPasswordUserAction);
 
   return commandMapper(
     { command, context },

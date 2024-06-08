@@ -1,4 +1,3 @@
-import { ConditionInitializer } from 'dynamoose/dist/Condition';
 import dynamoose from 'dynamoose';
 import { Schema, SchemaDefinition } from 'dynamoose/dist/Schema';
 import { ModelType, ObjectType } from 'dynamoose/dist/General';
@@ -7,6 +6,11 @@ import isTest from '../../../commons/utils/isTest';
 import { TableServiceInterface } from './interface/tableServiceInterface';
 import { ErrorHandlerInterface } from '../../../commons/errors/interfaces/errorHandlerInterfaces';
 import TableException from '../errors/tableException';
+import {
+  CreateTableItemMethodInput,
+  QueryTableItemMethodInput,
+  UpdateTableItemMethodInput,
+} from './types/tableServiceTypes';
 
 /**
  * Clase TableService que implementa la interfaz TableServiceInterface.
@@ -42,7 +46,7 @@ export default class TableService implements TableServiceInterface {
    * @returns {Promise<any>} - El elemento creado.
    * @throws {TableException} - Si ocurre un error al crear el elemento.
    */
-  async create(data: any) {
+  async create(data: CreateTableItemMethodInput) {
     const model = new this.modelType(data);
     return model.save();
   }
@@ -55,12 +59,9 @@ export default class TableService implements TableServiceInterface {
    * @returns {Promise<ObjectType[] | undefined>} - Los elementos que coinciden con la consulta.
    * @throws {TableException} - Si ocurre un error al realizar la consulta.
    */
-  async query(params: {
-    query: ConditionInitializer;
-    options?: {
-      using_index?: string;
-    };
-  }): Promise<ObjectType[] | undefined> {
+  async query(
+    params: QueryTableItemMethodInput
+  ): Promise<ObjectType[] | undefined> {
     console.log('MARTIN_LOG: TableService -> query -> params', params);
     const Model = this.modelType.query(params.query);
 
@@ -78,5 +79,24 @@ export default class TableService implements TableServiceInterface {
     if (!response) return undefined;
 
     return response.map((item) => item.toJSON());
+  }
+
+  async update(
+    params: UpdateTableItemMethodInput
+  ): Promise<ObjectType | undefined> {
+    const response = (
+      await this.modelType.update(params.key, params.payload, {
+        returnValues: 'ALL_NEW',
+      })
+    ).toJSON();
+
+    console.log(
+      'MARTIN_LOG=> TableService -> update -> response',
+      JSON.stringify(response)
+    );
+
+    if (!response) return undefined;
+
+    return response;
   }
 }

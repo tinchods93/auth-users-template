@@ -3,12 +3,11 @@ import commandInput from 'rebased/handler/input/commandApi';
 import commandOutput from 'rebased/handler/output/commandApi';
 import { commandMapper } from 'rebased/handler';
 import { HandlerCommandType } from './types/handlerTypes';
-import diContainer from '../../../diContainer';
-import LoginUserAction from '../../../application/actions/loginUserAction';
+import depsContainer from '../../../depsContainer';
+import LoginUserAction from '../../../application/actions/userActions/loginUserAction';
 
 export const handler = async (command: HandlerCommandType, context: any) => {
-  const action = diContainer.resolve(LoginUserAction);
-  console.log('MARTIN_LOG=> handler=>action=> ', action);
+  const action = depsContainer.resolve(LoginUserAction);
 
   return commandMapper(
     { command, context },

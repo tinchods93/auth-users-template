@@ -1,15 +1,15 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from './interfaces/applicationActionInterface';
-import { HandlerCommandType } from '../../infrastructure/primary/handlers/types/handlerTypes';
+import { ApplicationActionInterface } from '../interfaces/applicationActionInterface';
+import { HandlerCommandType } from '../../../infrastructure/primary/handlers/types/handlerTypes';
 import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
-} from '../services/interfaces/usersServiceInterface';
-import { registerUserInputSchema } from '../schemas/zodSchemas/registerUserInputSchema';
-import ZodSchemaValidation from '../schemas/ZodSchema';
-import ActionResponse from '../entities/actionResponse';
-import { ActionResponseInterface } from '../entities/interfaces/actionResponseInterface';
+} from '../../services/interfaces/usersServiceInterface';
+import { registerUserInputSchema } from '../../schemas/zodSchemas/registerUserInputSchema';
+import ZodSchemaValidation from '../../schemas/ZodSchema';
+import ActionResponse from '../../entities/actionResponse';
+import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
 
 @injectable()
 export default class RegisterUserAction implements ApplicationActionInterface {

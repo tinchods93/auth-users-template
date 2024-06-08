@@ -1,6 +1,6 @@
 // import container from tsyringe and declare all dependencies for injection
 
-import { container as diContainer } from 'tsyringe';
+import { container as depsContainer } from 'tsyringe';
 import {
   COGNITO_REPOSITORY_TOKEN,
   CognitoRepositoryInterface,
@@ -33,27 +33,27 @@ import {
 } from './infrastructure/secondary/services/interface/tableServiceInterface';
 
 // application
-diContainer.register<UsersServiceInterface>(USERS_SERVICE_TOKEN, {
+depsContainer.register<UsersServiceInterface>(USERS_SERVICE_TOKEN, {
   useClass: UsersService,
 });
 
 // domain
-diContainer.register<LicenseEntityInterface>(LICENSE_ENTITY_TOKEN, {
+depsContainer.register<LicenseEntityInterface>(LICENSE_ENTITY_TOKEN, {
   useClass: LicenseEntity,
 });
-diContainer.register<UserEntityInterface>(USER_ENTITY_TOKEN, {
+depsContainer.register<UserEntityInterface>(USER_ENTITY_TOKEN, {
   useClass: UserEntity,
 });
 
 // infrastructure
-diContainer.register<CognitoRepositoryInterface>(COGNITO_REPOSITORY_TOKEN, {
+depsContainer.register<CognitoRepositoryInterface>(COGNITO_REPOSITORY_TOKEN, {
   useClass: CognitoRepository,
 });
-diContainer.register<TableServiceInterface>(TABLE_SERVICE_TOKEN, {
+depsContainer.register<TableServiceInterface>(TABLE_SERVICE_TOKEN, {
   useClass: TableService,
 });
-diContainer.register<TableRepositoryInterface>(TABLE_REPOSITORY_TOKEN, {
+depsContainer.register<TableRepositoryInterface>(TABLE_REPOSITORY_TOKEN, {
   useClass: TableRepository,
 });
 
-export default diContainer;
+export default depsContainer;

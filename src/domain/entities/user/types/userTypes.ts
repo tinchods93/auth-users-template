@@ -24,14 +24,15 @@ export type UserType = {
   email: string;
 };
 
-export type UserEntityType = UserType & {
-  email: string;
+export type UserModifiableData = {
   personal_data: UserPersonalData;
   office_data?: OfficeData;
   parent_id?: string;
   office_id?: string;
   license?: LicenseType;
 };
+
+export type UserEntityType = UserType & UserModifiableData;
 
 export type UserEntityTableItem = UserEntityType & {
   pk: string; // <type>#sub (sub es el sub que viene de cognito)

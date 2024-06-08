@@ -18,13 +18,17 @@ import {
   UserServiceLoginInputType,
   UserServiceRegisterInputType,
   UsersServiceGetUserInputType,
+  UsersServiceUpdateUserInputType,
 } from './types/userServiceTypes';
 import { RolesEnum } from '../../domain/enums/rolesEnum';
 import {
   USER_ENTITY_TOKEN,
   UserEntityInterface,
 } from '../../domain/entities/user/interface/userEntityInterface';
-import { UserPublicData } from '../../domain/entities/user/types/userTypes';
+import {
+  UserEntityTableItem,
+  UserPublicData,
+} from '../../domain/entities/user/types/userTypes';
 import { EntitiesEnum } from '../../domain/enums/entitiesEnum';
 import { UserTableGsiEnum } from '../../domain/entities/license/enum/userTableGsi';
 import {
@@ -250,8 +254,9 @@ export default class UsersService implements UsersServiceInterface {
    * @throws {UserServiceException} - Si ocurre un error al obtener el perfil del usuario.
    */
   async getUserProfile(
-    payload: UsersServiceGetUserInputType
-  ): Promise<UserPublicData> {
+    payload: UsersServiceGetUserInputType,
+    returnRaw?: boolean
+  ): Promise<UserEntityTableItem | UserPublicData> {
     try {
       const { user_id: userId } = payload;
       const response = await this.tableService.query({
@@ -279,11 +284,57 @@ export default class UsersService implements UsersServiceInterface {
 
       const [user] = response;
 
+      if (returnRaw) {
+        return user as UserEntityTableItem;
+      }
+
       return this.userEntity.getClean(user);
     } catch (error) {
       throw this.UserServiceException.handle({
         message: error.message,
         code: ErrorCodesEnum.USER_GET_FAILED,
+        status: error.status ?? StatusCodes.CONFLICT,
+        payload,
+        error,
+      });
+    }
+  }
+
+  async updateUserProfile(
+    payload: UsersServiceUpdateUserInputType
+  ): Promise<UserPublicData> {
+    try {
+      const { user_id: userId, ...payloadForUpdate } = payload;
+
+      const existingUser = (await this.getUserProfile(
+        {
+          user_id: userId,
+        },
+        true
+      )) as UserEntityTableItem;
+
+      if (!existingUser) {
+        throw new Error('User not found');
+      }
+
+      const response = await this.tableService.update({
+        key: {
+          pk: existingUser.pk,
+          sk: existingUser.sk,
+        },
+        payload: payloadForUpdate,
+      });
+
+      console.log(
+        'MARTIN_LOG=> UsersService=>getUserProfile=>user=> ',
+        response
+      );
+
+      return this.userEntity.getClean(response);
+    } catch (error) {
+      throw this.UserServiceException.handle({
+        message: error.message,
+        code: ErrorCodesEnum.USER_UPDATE_FAILED,
         status: error.status ?? StatusCodes.CONFLICT,
         payload,
         error,
