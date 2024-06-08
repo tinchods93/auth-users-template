@@ -5,8 +5,7 @@
  */
 export interface SchemaInterface {
   /**
-   * El método `validate` es una función que no toma argumentos y puede devolver cualquier tipo de dato.
-   * Este método se utiliza para validar el esquema y debe ser implementado por cualquier clase que implemente `SchemaInterface`.
+   * El método `validate` se utiliza para validar el esquema y debe ser implementado por cualquier clase que implemente `SchemaInterface`.
    * El tipo de retorno `any` significa que el método puede devolver cualquier tipo de dato, pero generalmente se espera que devuelva un objeto que represente el estado de la validación o lance una excepción si la validación falla.
    *
    * @returns {any} El resultado de la validación del esquema.

@@ -11,7 +11,6 @@ export const handler = async (command: HandlerCommandType, context: any) => {
   const token = command.headers.Authorization;
 
   if (!validateTokenScopes(token)) {
-    console.log('MARTIN_LOG=> Invalid token');
     return {
       statusCode: 401,
       body: JSON.stringify({ message: 'Unauthorized' }),
