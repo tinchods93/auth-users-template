@@ -1,0 +1,12 @@
+- Effect: Allow
+  Action:
+    - dynamodb:PutItem
+  Resource:
+    - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${file(resources/index.json):table.usersLicenses}
+    - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${file(resources/index.json):table.usersLicenses}/index/*
+- Effect: Allow
+  Action:
+    - cognito-idp:AdminCreateUser
+    - cognito-idp:AdminAddUserToGroup
+    - cognito-idp:AdminSetUserPassword
+  Resource: !GetAtt UserPool.Arn

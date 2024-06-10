@@ -1,4 +1,5 @@
 import { ConditionInitializer } from 'dynamoose/dist/Condition';
+import { EntitiesEnum } from '../../../../domain/enums/entitiesEnum';
 
 export type TableKeyType = { pk: string; sk: string };
 
@@ -16,4 +17,10 @@ export type QueryTableItemMethodInput = {
 export type UpdateTableItemMethodInput = {
   key: TableKeyType;
   payload: any;
+};
+
+export type TableItemType = {
+  pk: string;
+  sk: string;
+  type: EntitiesEnum;
 };

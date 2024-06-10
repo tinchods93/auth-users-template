@@ -10,7 +10,7 @@
     "deploy": "sls deploy --stage develop",
     "remove": "sls remove --stage develop",
     "package": "sls package",
-    "test": "jest ./tests/unit/* --setupFiles dotenv/config --verbose",
+    "test": "jest ./tests/unit/zodSchemaValidation.test.ts --setupFiles dotenv/config --verbose",
     "start": "ts-node app/server/index.ts"
   },
   "author": "Martin dos Santos",

@@ -5,6 +5,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+tests/**/*_output.json
+volume
+
+docs/*.md
+
+lib
+
+*.pem
+
 # VS Code config
 .vscode/
 scripts/get-credentials.js
@@ -16,9 +25,7 @@ _meta
 .serverless
 .dynamodb
 .elasticmq
-.webpack
 
-volume
 
 #dynamoDb offline
 .dynamodb
@@ -26,7 +33,6 @@ volume
 # package directories
 node_modules
 jspm_packages
-package-lock.json
 
 # Simulation event for debug with localStack
 event.json
