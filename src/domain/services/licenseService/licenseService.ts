@@ -59,7 +59,11 @@ export default class LicenseService implements LicenseServiceInterface {
     );
   }
 
-  // Add license to user (crea una nueva licencia en la tabla, tambien una licenseHistory y la asocia al usuario)
+  /**
+   * Añade una licencia a un usuario
+   * @param {AddLicenseToUserParams} params - Parámetros para añadir la licencia
+   * @returns {Promise<any>} - Retorna una promesa que resuelve a cualquier valor
+   */
   async addLicenseToUser(params: AddLicenseToUserParams): Promise<any> {
     try {
       console.log(
@@ -135,7 +139,11 @@ export default class LicenseService implements LicenseServiceInterface {
     }
   }
 
-  // Get license by user (obtiene la licencia de un usuario)
+  /**
+   * Obtiene la licencia de un usuario
+   * @param {GetLicenseByUserParams} params - Parámetros para obtener la licencia
+   * @returns {Promise<LicenseHistoryEntityTableItemType>} - Retorna una promesa que resuelve a un elemento de la tabla de historial de licencias
+   */
   async getLicenseByUser(
     params: GetLicenseByUserParams
   ): Promise<LicenseHistoryEntityTableItemType> {
@@ -168,7 +176,11 @@ export default class LicenseService implements LicenseServiceInterface {
     }
   }
 
-  // Get license by id (obtiene la licencia por id)
+  /**
+   * Obtiene una licencia por su ID
+   * @param {GetLicenseByIdParams} params - Parámetros para obtener la licencia
+   * @returns {Promise<LicenseEntityTableItemType>} - Retorna una promesa que resuelve a un elemento de la tabla de licencias
+   */
   async getLicenseById(
     params: GetLicenseByIdParams
   ): Promise<LicenseEntityTableItemType> {
@@ -201,7 +213,11 @@ export default class LicenseService implements LicenseServiceInterface {
     }
   }
 
-  // Renew license (actualizamos la fecha de expiración de la licencia y la dejamos en estado ACTIVE)
+  /**
+   * Renueva una licencia
+   * @param {RenewLicenseParams} params - Parámetros para renovar la licencia
+   * @returns {Promise<LicenseEntityData>} - Retorna una promesa que resuelve a los datos de una licencia
+   */
   async renewLicense(params: RenewLicenseParams): Promise<LicenseEntityData> {
     try {
       const { inputLicenseId, durationInMonths } = params;
@@ -249,7 +265,11 @@ export default class LicenseService implements LicenseServiceInterface {
     }
   }
 
-  // Revoke license (desactivamos la licencia dejandola en estado REVOKED)
+  /**
+   * Revoca una licencia
+   * @param {RevokeLicenseParams} params - Parámetros para revocar la licencia
+   * @returns {Promise<LicenseEntityData>} - Retorna una promesa que resuelve a los datos de una licencia
+   */
   async revokeLicense(params: RevokeLicenseParams): Promise<LicenseEntityData> {
     try {
       const { licenseId } = params;
