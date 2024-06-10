@@ -34,11 +34,13 @@ export default function validateTokenScopes(token: string): boolean {
   const envKey = `${cognitoGroup.toUpperCase()}_GROUP_SCOPES`;
 
   // Obtiene los scopes requeridos de las variables de entorno
-  const requiredScopes = process.env.REQUIRED_TOKEN_SCOPES as string;
+  const requiredScopes = (process.env.REQUIRED_TOKEN_SCOPES as string).split(
+    ' '
+  );
 
   // Obtiene los scopes del token de las variables de entorno
   const tokenScopes = process.env[envKey] as string;
 
   // Verifica si los scopes del token incluyen los scopes requeridos, y retorna el resultado
-  return tokenScopes.includes(requiredScopes);
+  return requiredScopes.every((scope) => tokenScopes.includes(scope));
 }

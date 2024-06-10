@@ -5,8 +5,8 @@ import { HandlerCommandType } from '../../../infrastructure/primary/handlers/typ
 import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
-} from '../../services/interfaces/usersServiceInterface';
-import { newPasswordChallengeInputSchema } from '../../schemas/zodSchemas/newPasswordChallengeInputSchema';
+} from '../../../domain/services/userService/interfaces/usersServiceInterface';
+import { newPasswordChallengeInputSchema } from '../../schemas/zodSchemas/userActions/newPasswordChallengeInputSchema';
 import ZodSchemaValidation from '../../schemas/ZodSchema';
 import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
 import ActionResponse from '../../entities/actionResponse';

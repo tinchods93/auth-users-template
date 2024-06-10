@@ -1,0 +1,64 @@
+createLicense:
+  handler: src/infrastructure/primary/handlers/licenses/createLicense.handler
+  description: 'Creates a license'
+  name: ${file(resources/index.json):functions.createLicenseAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.createLicenseAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/createLicenseAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  environment:
+    REQUIRED_TOKEN_SCOPES: 'write.licenses'
+  events:
+    - http:
+        path: /licenses
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }
+
+# TODO: getLicenseById
+
+renewLicense:
+  handler: src/infrastructure/primary/handlers/licenses/renewLicense.handler
+  description: 'Renew license'
+  name: ${file(resources/index.json):functions.renewLicenseAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.renewLicenseAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/renewLicenseAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  environment:
+    REQUIRED_TOKEN_SCOPES: 'write.licenses'
+  events:
+    - http:
+        path: /licenses/{user_id}/renew
+        method: put
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }
+
+revokeLicense:
+  handler: src/infrastructure/primary/handlers/licenses/revokeLicense.handler
+  description: 'Revoke license'
+  name: ${file(resources/index.json):functions.revokeLicenseAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.revokeLicenseAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/revokeLicenseAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  environment:
+    REQUIRED_TOKEN_SCOPES: 'write.licenses'
+  events:
+    - http:
+        path: /licenses/{user_id}/revoke
+        method: put
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }

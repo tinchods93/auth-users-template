@@ -4,8 +4,6 @@ import { ModelType, ObjectType } from 'dynamoose/dist/General';
 import { AnyItem } from 'dynamoose/dist/Item';
 import isTest from '../../../commons/utils/isTest';
 import { TableServiceInterface } from './interface/tableServiceInterface';
-import { ErrorHandlerInterface } from '../../../commons/errors/interfaces/errorHandlerInterfaces';
-import TableException from '../errors/tableException';
 import {
   CreateTableItemMethodInput,
   QueryTableItemMethodInput,
@@ -18,8 +16,6 @@ import {
  */
 export default class TableService implements TableServiceInterface {
   private modelType!: ModelType<AnyItem>;
-
-  private TableException: ErrorHandlerInterface;
 
   /**
    * Constructor de la clase TableService.
@@ -37,7 +33,6 @@ export default class TableService implements TableServiceInterface {
       create: false,
       waitForActive: false,
     });
-    this.TableException = new TableException();
   }
 
   /**
@@ -62,20 +57,22 @@ export default class TableService implements TableServiceInterface {
   async query(
     params: QueryTableItemMethodInput
   ): Promise<ObjectType[] | undefined> {
-    console.log('MARTIN_LOG: TableService -> query -> params', params);
+    console.log(
+      'MARTIN_LOG: TableService -> query -> params',
+      JSON.stringify(params)
+    );
     const Model = this.modelType.query(params.query);
 
     if (params.options?.using_index) {
       Model.using(params.options.using_index);
     }
 
-    console.log('MARTIN_LOG=> TableService=>query=>Model=> ', Model);
-    console.log(
-      'MARTIN_LOG=> TableService=>query=>Model stringify=> ',
-      JSON.stringify(Model)
-    );
     const response = await Model.exec();
 
+    console.log(
+      'MARTIN_LOG: TableService -> query -> response',
+      JSON.stringify(response)
+    );
     if (!response) return undefined;
 
     return response.map((item) => item.toJSON());

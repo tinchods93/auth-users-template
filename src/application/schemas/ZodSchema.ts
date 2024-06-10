@@ -1,5 +1,6 @@
 import { ZodIssue, ZodObject, ZodType } from 'zod';
 import { SchemaInterface } from './interfaces/schemaInterface';
+import SchemaValidationException from '../errors/SchemaValidationException';
 
 export default class ZodSchemaValidation implements SchemaInterface {
   private schema: ZodObject<any> | ZodType;
@@ -12,13 +13,11 @@ export default class ZodSchemaValidation implements SchemaInterface {
     try {
       return this.schema.parse(payload);
     } catch (error) {
-      const finalMessage = error.issues?.map((issue: ZodIssue) =>
-        issue.path.join('.')
+      const finalMessage = error.issues?.map(
+        (issue: ZodIssue) => `${issue.message} -> ${issue.path.join('.')}`
       );
 
-      throw new Error(
-        `Schema Validation Failed. Failed Attributes: ${finalMessage}`
-      );
+      throw SchemaValidationException.handle({ message: finalMessage });
     }
   }
 }

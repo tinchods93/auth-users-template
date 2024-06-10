@@ -17,8 +17,6 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoRepositoryInterface } from './interfaces/cognitoServiceInterface';
 import { CognitoUserType } from './types/cognitoServiceTypes';
-import { ErrorHandlerInterface } from '../../../commons/errors/interfaces/errorHandlerInterfaces';
-import ServiceException from '../errors/serviceException';
 
 const USER_POOL_ID = process.env.USER_POOL_ID as string;
 const USER_CLIENT_ID = process.env.USER_CLIENT_ID as string;
@@ -37,12 +35,9 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
 
   private cognito: CognitoIdentityProvider;
 
-  private ServiceException: ErrorHandlerInterface;
-
   constructor() {
     this.client = new CognitoIdentityProviderClient(cognitoOptions);
     this.cognito = new CognitoIdentityProvider(cognitoOptions);
-    this.ServiceException = new ServiceException();
     console.log('MARTIN_LOG=> CognitoRepository =>constructor=> ', this);
   }
 

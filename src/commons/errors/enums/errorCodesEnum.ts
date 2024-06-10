@@ -13,7 +13,7 @@ export enum ErrorCodesEnum {
   REQUEST_FAILED = 'request_failed',
   SCHEMA_VALIDATION_FAILED = 'schema_validation_failed',
 
-  // APPLICATION - USER SERVICE
+  // DOMAIN - USER SERVICE
   USER_NOT_FOUND = 'user_not_found',
   USER_ALREADY_EXISTS = 'user_already_exists',
   USER_REGISTER_FAILED = 'user_register_failed',
@@ -31,4 +31,14 @@ export enum ErrorCodesEnum {
   USER_RESET_PASSWORD = 'user_reset_password_failed',
   USER_UPDATE_PROFILE = 'user_update_profile_failed',
   USER_UPDATE_ROLE = 'user_update_role_failed',
+
+  // DOMAIN - LICENSE SERVICE
+  LICENSE_NOT_FOUND = 'license_not_found',
+  LICENSE_ALREADY_EXISTS = 'license_already_exists',
+  LICENSE_ADD_FAILED = 'license_add_failed',
+  LICENSE_GET_FAILED = 'license_get_failed',
+  LICENSE_UPDATE_FAILED = 'license_update_failed',
+  LICENSE_DELETE_FAILED = 'license_delete_failed',
+  LICENSE_RENEW_FAILED = 'license_renew_failed',
+  LICENSE_REVOKE_FAILED = 'license_revoke_failed',
 }

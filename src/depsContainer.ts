@@ -7,20 +7,15 @@ import {
 } from './infrastructure/secondary/repository/interfaces/cognitoServiceInterface';
 import CognitoRepository from './infrastructure/secondary/repository/cognitoService';
 import {
-  USERS_SERVICE_TOKEN,
-  UsersServiceInterface,
-} from './application/services/interfaces/usersServiceInterface';
-import UsersService from './application/services/usersService';
-import {
   USER_ENTITY_TOKEN,
   UserEntityInterface,
-} from './domain/entities/user/interface/userEntityInterface';
+} from './domain/entities/userEntity/interface/userEntityInterface';
 import {
   LICENSE_ENTITY_TOKEN,
   LicenseEntityInterface,
-} from './domain/entities/license/interface/licenseEntityInterface';
-import LicenseEntity from './domain/entities/license/licenseEntity';
-import UserEntity from './domain/entities/user/userEntity';
+} from './domain/entities/license/licenseEntity/interface/licenseEntityInterface';
+import LicenseEntity from './domain/entities/license/licenseEntity/licenseEntity';
+import UserEntity from './domain/entities/userEntity/userEntity';
 import {
   TABLE_REPOSITORY_TOKEN,
   TableRepositoryInterface,
@@ -31,16 +26,39 @@ import {
   TABLE_SERVICE_TOKEN,
   TableServiceInterface,
 } from './infrastructure/secondary/services/interface/tableServiceInterface';
+import {
+  USERS_SERVICE_TOKEN,
+  UsersServiceInterface,
+} from './domain/services/userService/interfaces/usersServiceInterface';
+import UsersService from './domain/services/userService/usersService';
+import {
+  LICENSE_HISTORY_ENTITY_TOKEN,
+  LicenseHistoryEntityInterface,
+} from './domain/entities/license/licenseHistory/interfaces/licenseHistoryEntityInterface';
+import LicenseHistoryEntity from './domain/entities/license/licenseHistory/licenseHistoryEntity';
+import LicenseServiceInterface, {
+  LICENSE_SERVICE_TOKEN,
+} from './domain/services/licenseService/interfaces/LicenseServiceInterface';
+import LicenseService from './domain/services/licenseService/licenseService';
 
 // application
+
+// domain
 depsContainer.register<UsersServiceInterface>(USERS_SERVICE_TOKEN, {
   useClass: UsersService,
 });
-
-// domain
+depsContainer.register<LicenseServiceInterface>(LICENSE_SERVICE_TOKEN, {
+  useClass: LicenseService,
+});
 depsContainer.register<LicenseEntityInterface>(LICENSE_ENTITY_TOKEN, {
   useClass: LicenseEntity,
 });
+depsContainer.register<LicenseHistoryEntityInterface>(
+  LICENSE_HISTORY_ENTITY_TOKEN,
+  {
+    useClass: LicenseHistoryEntity,
+  }
+);
 depsContainer.register<UserEntityInterface>(USER_ENTITY_TOKEN, {
   useClass: UserEntity,
 });

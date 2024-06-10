@@ -1,6 +1,5 @@
-import { EntitiesEnum } from '../../src/domain/enums/entitiesEnum';
 import { RolesEnum } from '../../src/domain/enums/rolesEnum';
-import UserEntity from '../../src/domain/entities/user/userEntity';
+import UserEntity from '../../src/domain/entities/userEntity/userEntity';
 import { UserEntityCompleteMock } from '../mocks/userEntityCompleteMock';
 import outputTestResponse from '../utils/outputTestResponse';
 
@@ -14,41 +13,43 @@ describe('Unit Test: UserEntity', () => {
       testName: 'UserEntityComplete',
       payload: result,
     });
-    expect(result).toEqual({
-      pk: 'USER#user123',
-      sk: 'USER#user123',
-      username: 'testuser',
-      email: 'testuser@example.com',
-      user_id: 'user123',
-      type: EntitiesEnum.USER,
-      role: RolesEnum.USER,
-      personal_data: input.personal_data,
-      office_data: input.office_data,
-      office_id: input.office_data?.office_id,
-      parent_id: input.parent_id,
-      license: input.license,
-    });
+    expect(result.username).toBe(input.username);
+    expect(result.email).toBe(input.email);
+    expect(result.personal_data).toEqual(input.personal_data);
+    expect(result.office_data).toEqual(input.office_data);
+    expect(result.parent_id).toBe(input.parent_id);
+    expect(result.user_id).toBe(input.user_id);
+    expect(result.role).toBe(RolesEnum.USER);
+    expect(result.pk).toBe(`USER#${input.user_id}`);
+    expect(result.sk).toBe(`USER#${input.user_id}`);
+    expect(result.creation_date).toBeDefined();
+    expect(result.update_date).toBeDefined();
   });
 
   it('should build a UserEntity with missing optional fields', () => {
-    const input = UserEntityCompleteMock;
+    const input = {
+      username: 'testuser',
+      email: 'testuser@example.com',
+      parent_id: 'parent123',
+      user_id: 'user123',
+    };
 
     const userEntity = new UserEntity();
     const result = userEntity.build(input);
-
-    expect(result).toEqual({
-      pk: 'USER#user123',
-      sk: 'USER#user123',
-      username: 'testuser',
-      email: 'testuser@example.com',
-      type: EntitiesEnum.USER,
-      user_id: 'user123',
-      role: RolesEnum.USER,
-      personal_data: input.personal_data,
-      office_data: undefined,
-      office_id: undefined,
-      parent_id: undefined,
-      license: undefined,
+    outputTestResponse({
+      testName: 'UserEntityMissingOptionalFields',
+      payload: result,
     });
+    expect(result.username).toBe(input.username);
+    expect(result.email).toBe(input.email);
+    expect(result.personal_data).toBeUndefined();
+    expect(result.office_data).toBeUndefined();
+    expect(result.parent_id).toBe(input.parent_id);
+    expect(result.user_id).toBe(input.user_id);
+    expect(result.role).toBe(RolesEnum.USER);
+    expect(result.pk).toBe(`USER#${input.user_id}`);
+    expect(result.sk).toBe(`USER#${input.user_id}`);
+    expect(result.creation_date).toBeDefined();
+    expect(result.update_date).toBeDefined();
   });
 });

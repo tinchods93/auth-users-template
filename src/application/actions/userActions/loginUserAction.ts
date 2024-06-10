@@ -5,9 +5,9 @@ import { HandlerCommandType } from '../../../infrastructure/primary/handlers/typ
 import {
   USERS_SERVICE_TOKEN,
   UsersServiceInterface,
-} from '../../services/interfaces/usersServiceInterface';
+} from '../../../domain/services/userService/interfaces/usersServiceInterface';
 import ZodSchemaValidation from '../../schemas/ZodSchema';
-import { loginUserInputSchema } from '../../schemas/zodSchemas/loginUserInputSchema';
+import { loginUserInputSchema } from '../../schemas/zodSchemas/userActions/loginUserInputSchema';
 import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
 import ActionResponse from '../../entities/actionResponse';
 

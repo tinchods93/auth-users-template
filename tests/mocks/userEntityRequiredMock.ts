@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { UserEntityConstructorType } from '../../src/domain/entities/user/types/userTypes';
+import { UserEntityConstructorType } from '../../src/domain/entities/userEntity/types/userTypes';
 
 export const UserEntityCompleteMock: UserEntityConstructorType = {
   username: 'testuser',

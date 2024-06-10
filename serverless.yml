@@ -56,7 +56,7 @@ provider:
     USER_CLIENT_ID: !Ref UserPoolClient
     ADMIN_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.Admin}
     USER_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.User}
-    USERS_TABLE_NAME : ${file(resources/index.json):table.usersLicenses}
+    USERS_LICENSES_TABLE_NAME : ${file(resources/index.json):table.usersLicenses}
 
 package:
   individually: false
@@ -79,4 +79,5 @@ resources:
   - ${file(resources/tables/table.yml)}
 
 functions:
-  - ${file(src/functions.yml)}
+  - ${file(src/userActions.yml)}
+  - ${file(src/licenseActions.yml)}
