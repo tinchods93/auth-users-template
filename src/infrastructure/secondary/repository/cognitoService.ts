@@ -38,7 +38,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
   constructor() {
     this.client = new CognitoIdentityProviderClient(cognitoOptions);
     this.cognito = new CognitoIdentityProvider(cognitoOptions);
-    console.log('MARTIN_LOG=> CognitoRepository =>constructor=> ', this);
   }
 
   /**
@@ -78,11 +77,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
 
     await this.addUserToGroup(username, role);
 
-    console.log(
-      'MARTIN_LOG=> CognitoRepository=>createUser=>response: ',
-      response
-    );
-
     if (!response.User) throw new Error('Error al crear el usuario');
 
     return response.User;
@@ -93,10 +87,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     group: string
   ): Promise<AdminAddUserToGroupCommandOutput> {
     // Implementar agregar usuario a grupo
-    console.log('MARTIN_LOG=> CognitoRepository=>addUserToGroup=>', {
-      username,
-      group,
-    });
 
     const command = new AdminAddUserToGroupCommand({
       GroupName: group,
@@ -106,12 +96,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
 
     const response = await this.cognito.adminAddUserToGroup(command);
 
-    // const response = await this.client.send(command);
-
-    console.log(
-      'MARTIN_LOG=> CognitoRepository=>addUserToGroup=>response: ',
-      response
-    );
     return response;
   }
 
@@ -122,11 +106,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     }).input;
 
     const response = await this.cognito.adminGetUser(params);
-
-    console.log(
-      'MARTIN_LOG=> CognitoRepository=>getUserProfile=>response: ',
-      response
-    );
 
     return response;
   }
@@ -143,11 +122,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     password: string
   ): Promise<AdminInitiateAuthCommandOutput> {
     // Implementar autenticación de usuario
-    console.log('MARTIN_LOG=> CognitoRepository=>authenticateUser=>', {
-      username,
-      password,
-      USER_CLIENT_ID,
-    });
 
     const params = new AdminInitiateAuthCommand({
       UserPoolId: USER_POOL_ID,
@@ -160,11 +134,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     }).input;
 
     const response = await this.cognito.adminInitiateAuth(params);
-
-    console.log(
-      'MARTIN_LOG=>CognitoRepository=>authenticateUser=>response: ',
-      JSON.stringify(response)
-    );
 
     return response; // or return AccessToken if you need it
   }
@@ -183,10 +152,7 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     session: string
   ): Promise<AdminRespondToAuthChallengeCommandOutput> {
     // Implementar cambio de contraseña
-    console.log('MARTIN_LOG=> CognitoRepository=>changePassword=>', {
-      username,
-      newPassword,
-    });
+
     const params = new AdminRespondToAuthChallengeCommand({
       UserPoolId: USER_POOL_ID,
       ClientId: USER_CLIENT_ID,
@@ -199,10 +165,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     }).input;
 
     const response = await this.cognito.adminRespondToAuthChallenge(params);
-    console.log(
-      'MARTIN_LOG=> CognitoRepository=>changePassword=>response: ',
-      response
-    );
 
     return response;
   }
@@ -215,9 +177,7 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
    */
   async forgotPassword(username: string): Promise<ForgotPasswordCommandOutput> {
     // Implementar recuperación de contraseña
-    console.log('MARTIN_LOG=> CognitoRepository=>forgotPassword=>', {
-      username,
-    });
+
     const params = new ForgotPasswordCommand({
       ClientId: USER_CLIENT_ID,
       Username: username,
@@ -225,10 +185,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
 
     const response = await this.cognito.forgotPassword(params);
 
-    console.log(
-      'MARTIN_LOG=> CognitoRepository=>forgotPassword=>response: ',
-      response
-    );
     return response;
   }
 
@@ -245,12 +201,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     code: string,
     newPassword: string
   ): Promise<ConfirmForgotPasswordCommandOutput> {
-    console.log('MARTIN_LOG=> CognitoRepository=>confirmForgotPassword=>', {
-      username,
-      code,
-      newPassword,
-    });
-
     const params = new ConfirmForgotPasswordCommand({
       ClientId: USER_CLIENT_ID,
       Username: username,
@@ -259,11 +209,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     }).input;
 
     const response = await this.cognito.confirmForgotPassword(params);
-
-    console.log(
-      'MARTIN_LOG=> CognitoRepository=>confirmForgotPassword=>response: ',
-      response
-    );
 
     return response;
   }

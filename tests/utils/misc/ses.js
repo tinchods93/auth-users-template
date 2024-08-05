@@ -56,7 +56,6 @@ module.exports = {
           },
         };
       }
-      console.log('MARTIN_LOG>=> SES params', JSON.stringify(publishParams));
       const response = await ses
         .sendEmail(publishParams)
         .promise()

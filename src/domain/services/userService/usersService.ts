@@ -58,7 +58,6 @@ export default class UsersService implements UsersServiceInterface {
     private tableRepository: TableRepositoryInterface,
     @inject(USER_ENTITY_TOKEN) private userEntity: UserEntityInterface
   ) {
-    console.log('MARTIN_LOG=> UsersService=>constructor=> ', this);
     this.tableService = this.tableRepository.getInstance(
       this.userEntity.getTableSchema(),
       tableName
@@ -273,10 +272,7 @@ export default class UsersService implements UsersServiceInterface {
           using_index: TableGsiEnum.TYPE,
         },
       });
-      console.log(
-        'MARTIN_LOG=> UsersService=>getUserProfile=>user=> ',
-        response
-      );
+
       if (!response?.length) {
         throw new Error(ErrorMessagesEnum.USER_NOT_FOUND);
       }
@@ -331,11 +327,6 @@ export default class UsersService implements UsersServiceInterface {
         },
         payload: merge(existingPayload, payloadForUpdate),
       });
-
-      console.log(
-        'MARTIN_LOG=> UsersService=>getUserProfile=>user=> ',
-        response
-      );
 
       return this.userEntity.getClean(response);
     } catch (error) {

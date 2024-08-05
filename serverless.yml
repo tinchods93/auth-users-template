@@ -20,14 +20,14 @@ custom:
     develop: 1
     number: 1
 
-  # developDomain: e1-api-protoprime.click
-  # prodDomain: api-protoprime.click
 
-  # customDomain:
-  #   domainName: ${self:custom.${self:provider.stage, 'develop'}Domain}
-  #   basePath: users-ms${env:developerStack, ''}
-  #   endpointType: 'regional'
-  #   apiType: http
+  developDomain: e1-api-protoprime.click
+  prodDomain: api-protoprime.click
+
+  customDomain:
+    domainName: ${self:custom.${self:provider.stage, 'develop'}Domain}
+    basePath: docs-api${env:developerStack, ''}
+    endpointType: 'regional'
 
 provider:
   name: aws
@@ -70,6 +70,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-prune-plugin
   - serverless-webpack
+  - serverless-domain-manager
 
 resources:
   - ${file(resources/cognito/cognito.yml)}

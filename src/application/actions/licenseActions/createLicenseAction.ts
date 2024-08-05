@@ -26,10 +26,7 @@ export default class CreateLicenseAction implements ApplicationActionInterface {
       const payload = new ZodSchemaValidation(
         createLicenseActionInputSchema
       ).validate(commandPayload.body);
-      console.log(
-        'MARTIN_LOG=> CreateLicenseAction -> execute -> payload',
-        JSON.stringify(payload)
-      );
+
       const response = await this.licenseService.addLicenseToUser(payload);
 
       return this.actionResponse.success({

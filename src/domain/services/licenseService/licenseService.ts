@@ -66,16 +66,8 @@ export default class LicenseService implements LicenseServiceInterface {
    */
   async addLicenseToUser(params: AddLicenseToUserParams): Promise<any> {
     try {
-      console.log(
-        'MARTIN_LOG=> addLicenseToUser -> params',
-        JSON.stringify(params)
-      );
       const { userId, licenseType, durationInMonths } = params;
-      console.log('MARTIN_LOG=> addLicenseToUser -> destructure', {
-        userId,
-        licenseType,
-        durationInMonths,
-      });
+
       // Verificar que el usuario existe
       const user = await this.userService.getUserProfile(
         { user_id: userId },
@@ -85,7 +77,6 @@ export default class LicenseService implements LicenseServiceInterface {
       if (!user) {
         throw new Error(ErrorMessagesEnum.USER_NOT_FOUND);
       }
-      console.log('MARTIN_LOG=> addLicenseToUser', JSON.stringify(user));
       // Verificar que el usuario no tenga una licencia activa
       const userLicense = await this.getLicenseByUser({ userId }).catch(
         () => null
