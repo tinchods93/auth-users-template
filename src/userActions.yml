@@ -12,7 +12,7 @@ registerUser:
     - http:
         path: /users/signup
         method: post
-        # cors: true
+        cors: true
 
 loginUser:
   handler: src/infrastructure/primary/handlers/users/loginUser.handler
@@ -28,7 +28,7 @@ loginUser:
     - http:
         path: /users/signin
         method: post
-        # cors: true
+        cors: true
 
 getLicenseByUser:
   handler: src/infrastructure/primary/handlers/licenses/getLicenseByUser.handler
@@ -44,7 +44,7 @@ getLicenseByUser:
     REQUIRED_TOKEN_SCOPES: 'read.licenses'
   events:
     - http:
-        path: /users/{user_id}/licenses
+        path: /users/licenses
         method: get
         cors: true
         authorizer:
@@ -63,9 +63,9 @@ newPasswordChallenge:
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
     - http:
-        path: /users/{username}/password
+        path: /users/password
         method: put
-        # cors: true
+        cors: true
 
 forgotPassword:
   handler: src/infrastructure/primary/handlers/users/forgotPassword.handler
@@ -79,9 +79,9 @@ forgotPassword:
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
     - http:
-        path: /users/{username}/password/forgot
+        path: /users/password/forgot
         method: post
-        # cors: true
+        cors: true
 
 confirmForgotPassword:
   handler: src/infrastructure/primary/handlers/users/confirmForgotPassword.handler
@@ -95,9 +95,9 @@ confirmForgotPassword:
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   events:
     - http:
-        path: /users/{username}/password/forgot/confirm
+        path: /users/password/forgot/confirm
         method: post
-        # cors: true
+        cors: true
 
 getUserProfile:
   handler: src/infrastructure/primary/handlers/users/getUserProfile.handler
@@ -113,9 +113,9 @@ getUserProfile:
     REQUIRED_TOKEN_SCOPES: 'read.users'
   events:
     - http:
-        path: /users/{user_id}/profile
+        path: /profile
         method: get
-        # cors: true
+        cors: true
         authorizer:
           type: COGNITO_USER_POOLS
           authorizerId: { Ref: ApiGatewayAuthorizer }
@@ -134,9 +134,9 @@ updateUserAction:
     REQUIRED_TOKEN_SCOPES: 'read.users'
   events:
     - http:
-        path: /users/{user_id}
+        path: /users
         method: put
-        # cors: true
+        cors: true
         authorizer:
           type: COGNITO_USER_POOLS
           authorizerId: { Ref: ApiGatewayAuthorizer }

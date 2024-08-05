@@ -26,7 +26,7 @@ custom:
 
   customDomain:
     domainName: ${self:custom.${self:provider.stage, 'develop'}Domain}
-    basePath: docs-api${env:developerStack, ''}
+    basePath: users-api${env:developerStack, ''}
     endpointType: 'regional'
 
 provider:
