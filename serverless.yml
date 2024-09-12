@@ -1,13 +1,12 @@
-service: auth-users-template${env:developerStack, ''}
+service: auth-users
 
 configValidationMode: off
 frameworkVersion: '>=3'
 
 custom:
-
   config: ${file(config/index.js)}
-  stackPrefix: ${self:service}-${self:provider.stage}
-
+  projectName: formsoft
+  stackPrefix: ${self:service}-${self:custom.projectName}${env:developerStack, ''}-${self:provider.stage}
 
   userPoolId: !Ref UserPool
   userPoolClientId: !Ref UserPoolClient
@@ -20,13 +19,12 @@ custom:
     develop: 1
     number: 1
 
-
   developDomain: e1-api-protoprime.click
   prodDomain: api-protoprime.click
 
   customDomain:
     domainName: ${self:custom.${self:provider.stage, 'develop'}Domain}
-    basePath: users-api${env:developerStack, ''}
+    basePath: ${self:custom.projectName}/users-api${env:developerStack, ''}
     endpointType: 'regional'
 
 provider:
@@ -47,7 +45,7 @@ provider:
             - 'xray:PutTelemetryRecords'
           Resource: '*'
   environment:
-    SERVICE: ${self:service}
+    SERVICE: ${self:custom.stackPrefix}
     REGION: ${self:provider.region}
     ACCOUNT_ID: ${self:provider.accountId}
     LOG_LEVEL: DEBUG
@@ -56,7 +54,7 @@ provider:
     USER_CLIENT_ID: !Ref UserPoolClient
     ADMIN_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.Admin}
     USER_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.User}
-    USERS_LICENSES_TABLE_NAME : ${file(resources/index.json):table.usersLicenses}
+    USERS_LICENSES_TABLE_NAME: ${file(resources/index.json):table.usersLicenses}
 
 package:
   individually: false
