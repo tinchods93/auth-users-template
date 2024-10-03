@@ -31,7 +31,10 @@ export default class RegisterUserAction implements ApplicationActionInterface {
 
       return this.actionResponse.success({
         statusCode: StatusCodes.CREATED,
-        data: response,
+        data: {
+          status: 'success',
+          user: response,
+        },
       });
     } catch (error) {
       return this.actionResponse.error({

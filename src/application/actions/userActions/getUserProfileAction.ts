@@ -28,7 +28,7 @@ export default class GetUserProfileAction
     try {
       const payload = new ZodSchemaValidation(
         getUserProfileInputSchema
-      ).validate(commandPayload.parameters);
+      ).validate(commandPayload.query);
 
       const response = await this.usersService.getUserProfile(payload);
 

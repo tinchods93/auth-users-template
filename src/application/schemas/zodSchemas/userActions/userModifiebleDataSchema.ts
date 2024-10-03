@@ -24,6 +24,7 @@ const userModifiableDataSchema = z.object({
   parent_id: z.string().optional(),
   office_id: z.string().optional(),
   license_id: z.string().optional(),
+  role: z.string().optional(),
 });
 
 export default userModifiableDataSchema;

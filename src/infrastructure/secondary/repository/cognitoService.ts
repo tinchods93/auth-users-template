@@ -14,6 +14,8 @@ import {
   AdminAddUserToGroupCommandOutput,
   AdminGetUserCommand,
   AdminGetUserCommandOutput,
+  AdminRemoveUserFromGroupCommand,
+  AdminRemoveUserFromGroupCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoRepositoryInterface } from './interfaces/cognitoServiceInterface';
 import { CognitoUserType } from './types/cognitoServiceTypes';
@@ -70,7 +72,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
         },
         { Name: 'custom:role', Value: role },
       ],
-      MessageAction: 'SUPPRESS',
     });
 
     const response = await this.client.send(command);
@@ -95,6 +96,22 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     }).input;
 
     const response = await this.cognito.adminAddUserToGroup(command);
+
+    return response;
+  }
+
+  async removeUserFromGroup(
+    username: string,
+    group: string
+  ): Promise<AdminRemoveUserFromGroupCommandOutput> {
+    // Implementar remover usuario de grupo
+    const command = new AdminRemoveUserFromGroupCommand({
+      GroupName: group,
+      Username: username,
+      UserPoolId: USER_POOL_ID,
+    }).input;
+
+    const response = await this.cognito.adminRemoveUserFromGroup(command);
 
     return response;
   }

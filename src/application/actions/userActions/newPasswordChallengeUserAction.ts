@@ -29,7 +29,7 @@ export default class NewPasswordChallengeUserAction
       const payload = new ZodSchemaValidation(
         newPasswordChallengeInputSchema
       ).validate({
-        username: commandPayload.parameters.username,
+        username: commandPayload.body.username,
         newPassword: commandPayload.body.newPassword,
         session: commandPayload.body.session,
       });
@@ -38,7 +38,10 @@ export default class NewPasswordChallengeUserAction
 
       return this.actionResponse.success({
         statusCode: StatusCodes.OK,
-        data: response,
+        data: {
+          status: 'success',
+          data: response,
+        },
       });
     } catch (error) {
       return this.actionResponse.error({

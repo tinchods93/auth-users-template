@@ -1,4 +1,4 @@
-service: auth-users
+service: ${self:custom.projectName}-auth-users
 
 configValidationMode: off
 frameworkVersion: '>=3'
@@ -6,7 +6,7 @@ frameworkVersion: '>=3'
 custom:
   config: ${file(config/index.js)}
   projectName: formsoft
-  stackPrefix: ${self:service}-${self:custom.projectName}${env:developerStack, ''}-${self:provider.stage}
+  stackPrefix: ${self:service}${env:developerStack, ''}-${self:provider.stage}
 
   userPoolId: !Ref UserPool
   userPoolClientId: !Ref UserPoolClient
@@ -47,6 +47,7 @@ provider:
   environment:
     SERVICE: ${self:custom.stackPrefix}
     REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
     ACCOUNT_ID: ${self:provider.accountId}
     LOG_LEVEL: DEBUG
     OWNER_PROJECT_NAME: 'Protoprime'
@@ -76,6 +77,7 @@ resources:
   - ${file(resources/cognito/groups/userGroup.yml)}
   - ${file(resources/authorizer/authorizer.yml)}
   - ${file(resources/tables/table.yml)}
+  - ${file(resources/outputs/outputs.yml)}
 
 functions:
   - ${file(src/userActions.yml)}

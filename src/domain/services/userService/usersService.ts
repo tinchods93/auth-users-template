@@ -4,7 +4,6 @@ import { StatusCodes } from 'http-status-codes';
 import {
   AdminRespondToAuthChallengeCommandOutput,
   ConfirmForgotPasswordCommandOutput,
-  ForgotPasswordCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import {
   COGNITO_REPOSITORY_TOKEN,
@@ -197,13 +196,16 @@ export default class UsersService implements UsersServiceInterface {
    */
   async forgotPassword(
     payload: UserServiceForgotPasswordInputType
-  ): Promise<ForgotPasswordCommandOutput> {
+  ): Promise<any> {
     try {
       const { username } = payload;
 
       const response = await this.cognitoRepository.forgotPassword(username);
 
-      return response;
+      return {
+        ...response,
+        status: 'success',
+      };
     } catch (error) {
       throw UserServiceException.handle({
         message: error.message,
@@ -223,16 +225,19 @@ export default class UsersService implements UsersServiceInterface {
    */
   async confirmForgotPassword(
     payload: UserServiceConfirmForgotPasswordInputType
-  ): Promise<ConfirmForgotPasswordCommandOutput> {
+  ): Promise<any> {
     try {
       const { username, newPassword, confirmationCode } = payload;
       const response = await this.cognitoRepository.confirmForgotPassword(
         username,
-        newPassword,
-        confirmationCode
+        confirmationCode,
+        newPassword
       );
 
-      return response;
+      return {
+        ...response,
+        status: 'success',
+      };
     } catch (error) {
       throw UserServiceException.handle({
         message: error.message,
@@ -320,12 +325,25 @@ export default class UsersService implements UsersServiceInterface {
         ...existingPayload
       } = existingUser;
 
+      const newPayload = merge(existingPayload, payloadForUpdate);
+      if (payload.role) {
+        await Promise.allSettled([
+          this.cognitoRepository.addUserToGroup(
+            newPayload.username,
+            RolesEnum[newPayload.role.toUpperCase()]
+          ),
+          this.cognitoRepository.removeUserFromGroup(
+            existingPayload.username,
+            RolesEnum[existingPayload.role.toUpperCase()]
+          ),
+        ]);
+      }
       const response = await this.tableService.update({
         key: {
           pk,
           sk,
         },
-        payload: merge(existingPayload, payloadForUpdate),
+        payload: newPayload,
       });
 
       return this.userEntity.getClean(response);

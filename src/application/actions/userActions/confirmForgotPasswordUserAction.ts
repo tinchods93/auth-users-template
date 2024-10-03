@@ -29,7 +29,7 @@ export default class ConfirmForgotPasswordUserAction
       const payload = new ZodSchemaValidation(
         confirmForgotPasswordInputSchema
       ).validate({
-        username: commandPayload.parameters.username,
+        username: commandPayload.body.username,
         newPassword: commandPayload.body.newPassword,
         confirmationCode: commandPayload.body.confirmationCode,
       });

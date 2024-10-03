@@ -1,6 +1,8 @@
 import {
+  AdminAddUserToGroupCommandOutput,
   AdminGetUserCommandOutput,
   AdminInitiateAuthCommandOutput,
+  AdminRemoveUserFromGroupCommandOutput,
   AdminRespondToAuthChallengeCommandOutput,
   ConfirmForgotPasswordCommandOutput,
   ForgotPasswordCommandOutput,
@@ -32,4 +34,12 @@ export interface CognitoRepositoryInterface {
     newPassword: string
   ): Promise<ConfirmForgotPasswordCommandOutput>;
   getUserProfile(username: string): Promise<AdminGetUserCommandOutput>;
+  addUserToGroup(
+    username: string,
+    group: string
+  ): Promise<AdminAddUserToGroupCommandOutput>;
+  removeUserFromGroup(
+    username: string,
+    group: string
+  ): Promise<AdminRemoveUserFromGroupCommandOutput>;
 }

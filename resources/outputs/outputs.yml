@@ -1,0 +1,6 @@
+Outputs:
+  UserPoolRef:
+    Description: The reference to the Cognito User Pool
+    Value: !GetAtt UserPool.Arn
+    Export:
+      Name: ${self:custom.stackPrefix}-userpool-arn

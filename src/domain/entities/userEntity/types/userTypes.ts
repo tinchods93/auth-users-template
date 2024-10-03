@@ -30,6 +30,7 @@ export type UserModifiableData = {
   parent_id?: string;
   office_id?: string;
   license_id?: string;
+  role?: string;
 };
 
 export type UserEntityType = UserType & UserModifiableData;

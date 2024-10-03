@@ -1,4 +1,22 @@
 Resources:
+  Authorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      AuthorizerResultTtlInSeconds: 300
+      AuthorizerUri:
+        Fn::Join:
+          - ''
+          - - 'arn:aws:apigateway:'
+            - ${opt:region, 'us-east-1'}
+            - ':lambda:path/2015-03-31/functions/'
+            - ${self:custom.config.authorizer.${opt:region, 'us-east-1'}.arn}
+            - '/invocations'
+      Type: 'TOKEN'
+      IdentitySource: 'method.request.header.Authorization'
+      IdentityValidationExpression: .+
+      Name: Authorizer
+      RestApiId:
+        Ref: ApiGatewayRestApi
   ApiGatewayAuthorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties:

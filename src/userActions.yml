@@ -30,27 +30,6 @@ loginUser:
         method: post
         cors: true
 
-getLicenseByUser:
-  handler: src/infrastructure/primary/handlers/licenses/getLicenseByUser.handler
-  description: 'Get license by user'
-  name: ${file(resources/index.json):functions.getLicenseByUserAction}
-  timeout: 25
-  logRetentionInDays: 14
-  iamRoleStatementsInherit: true
-  iamRoleStatementsName: ${file(resources/index.json):functions.getLicenseByUserAction}
-  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/getLicenseByUserAction.yml)}
-  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
-  environment:
-    REQUIRED_TOKEN_SCOPES: 'read.licenses'
-  events:
-    - http:
-        path: /users/licenses
-        method: get
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId: { Ref: ApiGatewayAuthorizer }
-
 newPasswordChallenge:
   handler: src/infrastructure/primary/handlers/users/newPasswordChallenge.handler
   description: 'Respond to new password challenge'
@@ -99,6 +78,32 @@ confirmForgotPassword:
         method: post
         cors: true
 
+getLicenseByUser:
+  handler: src/infrastructure/primary/handlers/licenses/getLicenseByUser.handler
+  description: 'Get license by user'
+  name: ${file(resources/index.json):functions.getLicenseByUserAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.getLicenseByUserAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/getLicenseByUserAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  events:
+    - http:
+        path: /users/api/licenses
+        method: get
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
+    - http:
+        path: /users/licenses
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }
+
 getUserProfile:
   handler: src/infrastructure/primary/handlers/users/getUserProfile.handler
   description: 'Get user profile user action'
@@ -110,8 +115,15 @@ getUserProfile:
   iamRoleStatements: ${file(resources/iamRoleStatements/userActions/getUserProfileUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   environment:
-    REQUIRED_TOKEN_SCOPES: 'read.users'
+    REQUIRED_TOKEN_SCOPES: 'read.${self:custom.projectName}_users_api'
   events:
+    - http:
+        path: /users/api/profile
+        method: get
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
     - http:
         path: /users/profile
         method: get
@@ -131,8 +143,15 @@ updateUserAction:
   iamRoleStatements: ${file(resources/iamRoleStatements/userActions/updateUserAction.yml)}
   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
   environment:
-    REQUIRED_TOKEN_SCOPES: 'read.users'
+    REQUIRED_TOKEN_SCOPES: 'write.${self:custom.projectName}_users_api' # para usar cognito como autorizer
   events:
+    - http:
+        path: /users/api/update
+        method: put
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
     - http:
         path: /users/update
         method: put

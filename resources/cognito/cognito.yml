@@ -12,6 +12,14 @@ Resources:
         RecoveryMechanisms:
           - Name: verified_email
             Priority: 1
+      EmailVerificationMessage: ${file(resources/cognito/emailTemplates/recuperarPassword.json):message}
+      EmailVerificationSubject: ${file(resources/cognito/emailTemplates/recuperarPassword.json):subject}
+      # EmailAuthenticationMessage: ${file(resources/cognito/emailTemplate.json):message}
+      # EmailAuthenticationSubject: ${file(resources/cognito/emailTemplate.json):subject}
+      AdminCreateUserConfig:
+        InviteMessageTemplate:
+          EmailMessage: ${file(resources/cognito/emailTemplates/bienvenida.json):message}
+          EmailSubject: ${file(resources/cognito/emailTemplates/bienvenida.json):subject}
       AliasAttributes:
         - email
           # - Name: verified_phone_number

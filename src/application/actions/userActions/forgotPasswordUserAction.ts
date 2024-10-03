@@ -28,7 +28,7 @@ export default class ForgotPasswordUserAction
     try {
       const payload = new ZodSchemaValidation(
         forgotPasswordInputSchema
-      ).validate(commandPayload.parameters);
+      ).validate(commandPayload.body);
 
       const response = await this.usersService.forgotPassword(payload);
 
