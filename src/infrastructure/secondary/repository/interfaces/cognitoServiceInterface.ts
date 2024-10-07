@@ -42,4 +42,5 @@ export interface CognitoRepositoryInterface {
     username: string,
     group: string
   ): Promise<AdminRemoveUserFromGroupCommandOutput>;
+  validateSessionToken(token: string): Promise<any>;
 }

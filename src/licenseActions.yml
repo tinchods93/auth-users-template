@@ -12,6 +12,13 @@ createLicense:
     REQUIRED_TOKEN_SCOPES: 'write.licenses'
   events:
     - http:
+        path: /api/licenses
+        method: post
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
+    - http:
         path: /licenses
         method: post
         cors: true
@@ -19,7 +26,33 @@ createLicense:
           type: COGNITO_USER_POOLS
           authorizerId: { Ref: ApiGatewayAuthorizer }
 
-# TODO: getLicenseById
+getLicense:
+  handler: src/infrastructure/primary/handlers/licenses/getLicense.handler
+  description: 'Get license by id'
+  name: ${file(resources/index.json):functions.getLicenseAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.getLicenseAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/getLicenseAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  events:
+    - http:
+        # ?licence_id={licence_id}&user_id={user_id}
+        path: /api/licenses
+        method: get
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
+    - http:
+        # ?licence_id={licence_id}&user_id={user_id}
+        path: /licenses
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }
 
 renewLicense:
   handler: src/infrastructure/primary/handlers/licenses/renewLicense.handler
@@ -35,7 +68,14 @@ renewLicense:
     REQUIRED_TOKEN_SCOPES: 'write.licenses'
   events:
     - http:
-        path: /licenses/{user_id}/renew
+        path: /api/licenses/renew
+        method: put
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
+    - http:
+        path: /licenses/renew
         method: put
         cors: true
         authorizer:
@@ -56,7 +96,16 @@ revokeLicense:
     REQUIRED_TOKEN_SCOPES: 'write.licenses'
   events:
     - http:
-        path: /licenses/{user_id}/revoke
+        # ?user_id={user_id}
+        path: /api/licenses/revoke
+        method: put
+        cors: true
+        authorizer:
+          type: CUSTOM
+          authorizerId: { Ref: Authorizer }
+    - http:
+        # ?user_id={user_id}
+        path: /licenses/revoke
         method: put
         cors: true
         authorizer:

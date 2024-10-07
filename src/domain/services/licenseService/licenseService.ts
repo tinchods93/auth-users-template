@@ -13,7 +13,6 @@ import {
   LICENSE_HISTORY_ENTITY_TOKEN,
   LicenseHistoryEntityInterface,
 } from '../../entities/license/licenseHistory/interfaces/licenseHistoryEntityInterface';
-import { LicenseHistoryEntityTableItemType } from '../../entities/license/licenseHistory/types/licenseHistoryEntityTypes';
 import { EntitiesEnum } from '../../enums/entitiesEnum';
 import { TableGsiEnum } from '../../enums/userTableGsi';
 import LicenseServiceException from '../errors/licenseServiceException';
@@ -32,8 +31,8 @@ import {
 import LicenseServiceInterface from './interfaces/LicenseServiceInterface';
 import {
   AddLicenseToUserParams,
-  GetLicenseByIdParams,
-  GetLicenseByUserParams,
+  GetLicenseParams,
+  LicenseServiceResponseType,
   RenewLicenseParams,
   RevokeLicenseParams,
 } from './types/licenseServiceTypes';
@@ -64,7 +63,9 @@ export default class LicenseService implements LicenseServiceInterface {
    * @param {AddLicenseToUserParams} params - Parámetros para añadir la licencia
    * @returns {Promise<any>} - Retorna una promesa que resuelve a cualquier valor
    */
-  async addLicenseToUser(params: AddLicenseToUserParams): Promise<any> {
+  async addLicenseToUser(
+    params: AddLicenseToUserParams
+  ): Promise<LicenseServiceResponseType> {
     try {
       const { userId, licenseType, durationInMonths } = params;
 
@@ -78,7 +79,7 @@ export default class LicenseService implements LicenseServiceInterface {
         throw new Error(ErrorMessagesEnum.USER_NOT_FOUND);
       }
       // Verificar que el usuario no tenga una licencia activa
-      const userLicense = await this.getLicenseByUser({ userId }).catch(
+      const userLicense = await this.getLicense({ userId }, true).catch(
         () => null
       );
       if (userLicense) {
@@ -119,7 +120,10 @@ export default class LicenseService implements LicenseServiceInterface {
       await Promise.all(promises);
 
       // Retornar la licencia
-      return this.LicenseEntity.getClean(licenseEntity);
+      return {
+        status: 'success',
+        data: this.LicenseEntity.getClean(licenseEntity),
+      };
     } catch (error) {
       throw LicenseServiceException.handle({
         message: error.message,
@@ -131,60 +135,50 @@ export default class LicenseService implements LicenseServiceInterface {
   }
 
   /**
-   * Obtiene la licencia de un usuario
-   * @param {GetLicenseByUserParams} params - Parámetros para obtener la licencia
-   * @returns {Promise<LicenseHistoryEntityTableItemType>} - Retorna una promesa que resuelve a un elemento de la tabla de historial de licencias
-   */
-  async getLicenseByUser(
-    params: GetLicenseByUserParams
-  ): Promise<LicenseHistoryEntityTableItemType> {
-    try {
-      const { userId } = params;
-      const licenseItem = await this.tableService.query({
-        query: {
-          type: {
-            eq: EntitiesEnum.LICENSE,
-          },
-          user_id: {
-            eq: userId,
-          },
-        },
-        options: {
-          using_index: TableGsiEnum.TYPE,
-        },
-      });
-
-      if (!licenseItem?.length) {
-        throw new Error(ErrorMessagesEnum.LICENSE_NOT_FOUND);
-      }
-
-      return licenseItem[0];
-    } catch (error) {
-      throw LicenseServiceException.handle({
-        message: error.message,
-        code: ErrorCodesEnum.LICENSE_GET_FAILED,
-      });
-    }
-  }
-
-  /**
    * Obtiene una licencia por su ID
-   * @param {GetLicenseByIdParams} params - Parámetros para obtener la licencia
+   * @param {GetLicenseParams} params - Parámetros para obtener la licencia
    * @returns {Promise<LicenseEntityTableItemType>} - Retorna una promesa que resuelve a un elemento de la tabla de licencias
    */
-  async getLicenseById(
-    params: GetLicenseByIdParams
-  ): Promise<LicenseEntityTableItemType> {
+  async getLicense(
+    params: GetLicenseParams,
+    returnRaw?: boolean
+  ): Promise<LicenseEntityData | LicenseEntityTableItemType> {
     try {
-      const { licenseId } = params;
-      const licenseItem = await this.tableService.query({
-        query: {
-          type: {
-            eq: EntitiesEnum.LICENSE,
-          },
+      const { licenseId, userId } = params;
+      let queryParams = {};
+      if (licenseId) {
+        queryParams = {
           license_id: {
             eq: licenseId,
           },
+        };
+      } else if (userId) {
+        queryParams = {
+          user_id: {
+            eq: userId,
+          },
+        };
+      }
+      console.log(
+        'MARTIN_LOG=> LicenseService -> getLicense -> queryParams',
+        JSON.stringify({
+          query: {
+            type: {
+              eq: EntitiesEnum.LICENSE,
+            },
+            ...queryParams,
+          },
+          options: {
+            using_index: TableGsiEnum.TYPE,
+          },
+        })
+      );
+      const licenseItem = await this.tableService.query({
+        query: {
+          type: {
+            eq: EntitiesEnum.LICENSE,
+          },
+          ...queryParams,
         },
         options: {
           using_index: TableGsiEnum.TYPE,
@@ -195,7 +189,9 @@ export default class LicenseService implements LicenseServiceInterface {
         throw new Error(ErrorMessagesEnum.LICENSE_NOT_FOUND);
       }
 
-      return licenseItem[0];
+      return returnRaw
+        ? licenseItem[0]
+        : this.LicenseEntity.getClean(licenseItem[0]);
     } catch (error) {
       throw LicenseServiceException.handle({
         message: error.message,
@@ -209,11 +205,19 @@ export default class LicenseService implements LicenseServiceInterface {
    * @param {RenewLicenseParams} params - Parámetros para renovar la licencia
    * @returns {Promise<LicenseEntityData>} - Retorna una promesa que resuelve a los datos de una licencia
    */
-  async renewLicense(params: RenewLicenseParams): Promise<LicenseEntityData> {
+  async renewLicense(
+    params: RenewLicenseParams
+  ): Promise<LicenseServiceResponseType> {
     try {
-      const { inputLicenseId, durationInMonths } = params;
+      const { licenseId, durationInMonths } = params;
       // Obtenemos la licencia
-      const license = await this.getLicenseById({ licenseId: inputLicenseId });
+      const license = (await this.getLicense(
+        {
+          licenseId,
+        },
+        true
+      )) as LicenseEntityTableItemType;
+
       if (!license) {
         throw new Error(ErrorMessagesEnum.LICENSE_NOT_FOUND);
       }
@@ -222,7 +226,6 @@ export default class LicenseService implements LicenseServiceInterface {
       const {
         pk,
         sk,
-        license_id: licenseId,
         user_id: userId,
         ...updatedLicense
       } = this.LicenseEntity.updateExpirationDate(license, durationInMonths);
@@ -247,7 +250,10 @@ export default class LicenseService implements LicenseServiceInterface {
       ];
       await Promise.all(promises);
 
-      return this.LicenseEntity.getClean(license);
+      return {
+        status: 'success',
+        data: this.LicenseEntity.getClean(license),
+      };
     } catch (error) {
       throw LicenseServiceException.handle({
         message: error.message,
@@ -261,15 +267,25 @@ export default class LicenseService implements LicenseServiceInterface {
    * @param {RevokeLicenseParams} params - Parámetros para revocar la licencia
    * @returns {Promise<LicenseEntityData>} - Retorna una promesa que resuelve a los datos de una licencia
    */
-  async revokeLicense(params: RevokeLicenseParams): Promise<LicenseEntityData> {
+  async revokeLicense(
+    params: RevokeLicenseParams
+  ): Promise<LicenseServiceResponseType> {
     try {
       const { licenseId } = params;
       // Obtenemos la licencia
-      const license = await this.getLicenseById({ licenseId });
+      const license = (await this.getLicense(
+        {
+          licenseId,
+        },
+        true
+      )) as LicenseEntityTableItemType;
       if (!license) {
         throw new Error(ErrorMessagesEnum.LICENSE_NOT_FOUND);
       }
-
+      console.log(
+        'MARTIN_LOG=> LicenseService -> revokeLicense -> license',
+        JSON.stringify(license)
+      );
       // Actualizamos la licencia
       const {
         pk,
@@ -300,7 +316,10 @@ export default class LicenseService implements LicenseServiceInterface {
       ];
       await Promise.all(promises);
 
-      return this.LicenseEntity.getClean(license);
+      return {
+        status: 'success',
+        data: this.LicenseEntity.getClean(license),
+      };
     } catch (error) {
       throw LicenseServiceException.handle({
         message: error.message,

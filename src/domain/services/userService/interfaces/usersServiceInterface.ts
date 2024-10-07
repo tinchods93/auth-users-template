@@ -10,6 +10,7 @@ import {
   UserServiceRegisterInputType,
   UsersServiceGetUserInputType,
   UsersServiceUpdateUserInputType,
+  UsersServiceValidateSessionTokenInputType,
 } from '../types/userServiceTypes';
 
 export const USERS_SERVICE_TOKEN = Symbol('UsersServiceToken');
@@ -31,4 +32,7 @@ export interface UsersServiceInterface {
   updateUserProfile(
     payload: UsersServiceUpdateUserInputType
   ): Promise<UserPublicData>;
+  validateSessionToken(
+    payload: UsersServiceValidateSessionTokenInputType
+  ): Promise<any>;
 }

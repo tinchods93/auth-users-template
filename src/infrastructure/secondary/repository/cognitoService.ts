@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+import { JwksClient } from 'jwks-rsa';
 import {
   CognitoIdentityProviderClient,
   AdminCreateUserCommand,
@@ -18,7 +20,10 @@ import {
   AdminRemoveUserFromGroupCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoRepositoryInterface } from './interfaces/cognitoServiceInterface';
-import { CognitoUserType } from './types/cognitoServiceTypes';
+import {
+  CognitoUserType,
+  DecodedCognitoToken,
+} from './types/cognitoServiceTypes';
 
 const USER_POOL_ID = process.env.USER_POOL_ID as string;
 const USER_CLIENT_ID = process.env.USER_CLIENT_ID as string;
@@ -228,5 +233,46 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     const response = await this.cognito.confirmForgotPassword(params);
 
     return response;
+  }
+
+  async validateSessionToken(token: string): Promise<any> {
+    const signingUrl = (process.env.USER_POOL_SIGNING_URL as string)
+      .replace('<region>', process.env.REGION as string)
+      .replace('<userPoolId>', process.env.USER_POOL_ID as string);
+
+    console.log('MARTIN_LOG=> signingUrl: ', signingUrl);
+
+    const client = new JwksClient({
+      jwksUri: signingUrl,
+    });
+
+    const decodedToken: DecodedCognitoToken = jwt.decode(token, {
+      complete: true,
+    }) as any;
+
+    console.log('MARTIN_LOG=> decodedToken: ', decodedToken);
+
+    const publicKey = (
+      await client.getSigningKey(decodedToken.header.kid)
+    )?.getPublicKey();
+
+    // function getKey(header, callback) {
+    //   ;
+    // }
+    console.log('MARTIN_LOG=>> PublicKey: ', publicKey);
+
+    const isValidSigninKey = jwt.verify(token, publicKey);
+
+    console.log('MARTIN_LOG=>> isValidSigninKey: ', isValidSigninKey);
+
+    const verified = jwt.verify(token, publicKey, {
+      algorithms: ['RS256'],
+      issuer: decodedToken.payload.iss,
+      audience: decodedToken.payload.aud,
+    });
+
+    console.log('MARTIN_LOG=> verified: ', verified);
+
+    return verified;
   }
 }

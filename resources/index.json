@@ -8,6 +8,7 @@
     "userPoolClient": {
         "name": "${self:custom.stackPrefix}-userPoolClient"
     },
+    "userPoolSigningUrl": "https://cognito-idp.<region>.amazonaws.com/<userPoolId>/.well-known/jwks.json",
     "functions": {
         "registerUserAction": "${self:custom.stackPrefix}-registerUserAction",
         "loginUserAction": "${self:custom.stackPrefix}-loginUserAction",
@@ -17,8 +18,10 @@
         "getUserProfileUserAction": "${self:custom.stackPrefix}-getUserProfileUserAction",
         "updateUserAction": "${self:custom.stackPrefix}-updateUserAction",
         "createLicenseAction": "${self:custom.stackPrefix}-createLicenseAction",
-        "getLicenseByUserAction": "${self:custom.stackPrefix}-getLicenseByUserAction",
+        "getLicenseByUserIdAction": "${self:custom.stackPrefix}-getLicenseByUserIdAction",
+        "getLicenseAction": "${self:custom.stackPrefix}-getLicenseAction",
         "renewLicenseAction": "${self:custom.stackPrefix}-renewLicenseAction",
-        "revokeLicenseAction": "${self:custom.stackPrefix}-revokeLicenseAction"
+        "revokeLicenseAction": "${self:custom.stackPrefix}-revokeLicenseAction",
+        "validateSessionTokenAction": "${self:custom.stackPrefix}-validateSessionTokenAction"
     }
 }

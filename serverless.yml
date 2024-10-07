@@ -53,6 +53,7 @@ provider:
     OWNER_PROJECT_NAME: 'Protoprime'
     USER_POOL_ID: !Ref UserPool
     USER_CLIENT_ID: !Ref UserPoolClient
+    USER_POOL_SIGNING_URL: ${file(resources/index.json):userPoolSigningUrl}
     ADMIN_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.Admin}
     USER_GROUP_SCOPES: ${self:custom.config.cognitoGroupsRoles.User}
     USERS_LICENSES_TABLE_NAME: ${file(resources/index.json):table.usersLicenses}

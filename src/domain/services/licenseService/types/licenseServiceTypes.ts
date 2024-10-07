@@ -6,19 +6,25 @@ export type AddLicenseToUserParams = {
   durationInMonths?: number;
 };
 
-export type GetLicenseByUserParams = {
+export type getLicenseByUserIdParams = {
   userId: string;
 };
 
-export type GetLicenseByIdParams = {
-  licenseId: string;
+export type GetLicenseParams = {
+  licenseId?: string;
+  userId?: string;
 };
 
 export type RenewLicenseParams = {
-  inputLicenseId: string;
+  licenseId: string;
   durationInMonths: number;
 };
 
 export type RevokeLicenseParams = {
   licenseId: string;
+};
+
+export type LicenseServiceResponseType = {
+  status: string;
+  data: any;
 };

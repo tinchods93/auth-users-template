@@ -4,10 +4,10 @@ import commandOutput from 'rebased/handler/output/commandApi';
 import { commandMapper } from 'rebased/handler';
 import { HandlerCommandType } from '../types/handlerTypes';
 import depsContainer from '../../../../depsContainer';
-import GetUserProfileAction from '../../../../application/actions/userActions/getUserProfileAction';
+import GetLicenseAction from '../../../../application/actions/licenseActions/getLicenseAction';
 
 export const handler = async (command: HandlerCommandType, context: any) => {
-  const action = depsContainer.resolve(GetUserProfileAction);
+  const action = depsContainer.resolve(GetLicenseAction);
 
   return commandMapper(
     { command, context },

@@ -31,6 +31,7 @@ export enum ErrorCodesEnum {
   USER_RESET_PASSWORD = 'user_reset_password_failed',
   USER_UPDATE_PROFILE = 'user_update_profile_failed',
   USER_UPDATE_ROLE = 'user_update_role_failed',
+  USER_VERIFY_SESSION_TOKEN = 'user_verify_session_token_failed',
 
   // DOMAIN - LICENSE SERVICE
   LICENSE_NOT_FOUND = 'license_not_found',

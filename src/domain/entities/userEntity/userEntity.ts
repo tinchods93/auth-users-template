@@ -82,17 +82,11 @@ export default class UserEntity
   }
 
   getClean(input: UserEntityTableItem): UserPublicData {
-    return {
-      username: input.username,
-      email: input.email,
-      user_id: input.user_id,
-      role: input.role,
-      personal_data: input.personal_data,
-      office_data: input.office_data,
-      office_id: input.office_id,
-      parent_id: input.parent_id,
-      creation_date: input.creation_date,
-      update_date: input.update_date,
-    };
+    const cleaned: any = { ...input };
+    delete cleaned.pk;
+    delete cleaned.sk;
+    delete cleaned.type;
+
+    return cleaned;
   }
 }

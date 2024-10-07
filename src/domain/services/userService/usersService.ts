@@ -1,10 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { merge } from 'lodash';
 import { StatusCodes } from 'http-status-codes';
-import {
-  AdminRespondToAuthChallengeCommandOutput,
-  ConfirmForgotPasswordCommandOutput,
-} from '@aws-sdk/client-cognito-identity-provider';
+import { AdminRespondToAuthChallengeCommandOutput } from '@aws-sdk/client-cognito-identity-provider';
 import {
   COGNITO_REPOSITORY_TOKEN,
   CognitoRepositoryInterface,
@@ -19,6 +16,7 @@ import {
   UserServiceRegisterInputType,
   UsersServiceGetUserInputType,
   UsersServiceUpdateUserInputType,
+  UsersServiceValidateSessionTokenInputType,
 } from './types/userServiceTypes';
 import { RolesEnum } from '../../../domain/enums/rolesEnum';
 import {
@@ -353,6 +351,32 @@ export default class UsersService implements UsersServiceInterface {
         code: ErrorCodesEnum.USER_UPDATE_FAILED,
         status: error.status ?? StatusCodes.CONFLICT,
         payload,
+        error,
+      });
+    }
+  }
+
+  async validateSessionToken({
+    token,
+  }: UsersServiceValidateSessionTokenInputType): Promise<any> {
+    try {
+      const response = await this.cognitoRepository.validateSessionToken(token);
+      return {
+        sub: response?.sub,
+        'cognito:groups': response?.['cognito:groups'],
+        email_verified: response?.email_verified,
+        'cognito:username': response?.['cognito:username'],
+        'cognito:roles': response?.['cognito:roles'],
+        exp: response?.exp,
+        'custom:role': response?.['custom:role'],
+        email: response?.email,
+      };
+    } catch (error) {
+      throw UserServiceException.handle({
+        message: error.message,
+        code: ErrorCodesEnum.USER_VERIFY_SESSION_TOKEN,
+        status: error.status ?? StatusCodes.UNAUTHORIZED,
+        payload: { token },
         error,
       });
     }

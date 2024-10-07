@@ -1,24 +1,25 @@
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
-import { ApplicationActionInterface } from '../interfaces/applicationActionInterface';
 import { HandlerCommandType } from '../../../infrastructure/primary/handlers/types/handlerTypes';
+import {
+  USERS_SERVICE_TOKEN,
+  UsersServiceInterface,
+} from '../../../domain/services/userService/interfaces/usersServiceInterface';
 import ZodSchemaValidation from '../../schemas/ZodSchema';
 import ActionResponse from '../../entities/actionResponse';
 import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
-import LicenseServiceInterface, {
-  LICENSE_SERVICE_TOKEN,
-} from '../../../domain/services/licenseService/interfaces/LicenseServiceInterface';
-import { getLicenseByUserActionInputSchema } from '../../schemas/zodSchemas/licenseActions/getLicenseByUserActionInputSchema';
+import { ApplicationActionInterface } from '../interfaces/applicationActionInterface';
+import { validateSessionTokenInputSchema } from '../../schemas/zodSchemas/userActions/validateSessionTokenInputSchema';
 
 @injectable()
-export default class GetLicenseByUserAction
+export default class ValidateSessionTokenAction
   implements ApplicationActionInterface
 {
   private actionResponse: ActionResponseInterface;
 
   constructor(
-    @inject(LICENSE_SERVICE_TOKEN)
-    private licenseService: LicenseServiceInterface
+    @inject(USERS_SERVICE_TOKEN)
+    private usersService: UsersServiceInterface
   ) {
     this.actionResponse = new ActionResponse();
   }
@@ -26,11 +27,10 @@ export default class GetLicenseByUserAction
   public execute = async (commandPayload: HandlerCommandType) => {
     try {
       const payload = new ZodSchemaValidation(
-        getLicenseByUserActionInputSchema
+        validateSessionTokenInputSchema
       ).validate(commandPayload.body);
-      const response = await this.licenseService.getLicenseByUser({
-        userId: payload.user_id,
-      });
+
+      const response = await this.usersService.validateSessionToken(payload);
 
       return this.actionResponse.success({
         statusCode: StatusCodes.OK,

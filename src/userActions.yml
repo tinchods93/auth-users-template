@@ -78,32 +78,6 @@ confirmForgotPassword:
         method: post
         cors: true
 
-getLicenseByUser:
-  handler: src/infrastructure/primary/handlers/licenses/getLicenseByUser.handler
-  description: 'Get license by user'
-  name: ${file(resources/index.json):functions.getLicenseByUserAction}
-  timeout: 25
-  logRetentionInDays: 14
-  iamRoleStatementsInherit: true
-  iamRoleStatementsName: ${file(resources/index.json):functions.getLicenseByUserAction}
-  iamRoleStatements: ${file(resources/iamRoleStatements/licenseActions/getLicenseByUserAction.yml)}
-  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
-  events:
-    - http:
-        path: /users/api/licenses
-        method: get
-        cors: true
-        authorizer:
-          type: CUSTOM
-          authorizerId: { Ref: Authorizer }
-    - http:
-        path: /users/licenses
-        method: get
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId: { Ref: ApiGatewayAuthorizer }
-
 getUserProfile:
   handler: src/infrastructure/primary/handlers/users/getUserProfile.handler
   description: 'Get user profile user action'
@@ -118,7 +92,7 @@ getUserProfile:
     REQUIRED_TOKEN_SCOPES: 'read.${self:custom.projectName}_users_api'
   events:
     - http:
-        path: /users/api/profile
+        path: /api/users/profile
         method: get
         cors: true
         authorizer:
@@ -146,7 +120,7 @@ updateUserAction:
     REQUIRED_TOKEN_SCOPES: 'write.${self:custom.projectName}_users_api' # para usar cognito como autorizer
   events:
     - http:
-        path: /users/api/update
+        path: /api/users/update
         method: put
         cors: true
         authorizer:
@@ -155,6 +129,25 @@ updateUserAction:
     - http:
         path: /users/update
         method: put
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: { Ref: ApiGatewayAuthorizer }
+
+validateSessionTokenAction:
+  handler: src/infrastructure/primary/handlers/users/validateSessionToken.handler
+  description: 'Validate session token'
+  name: ${file(resources/index.json):functions.validateSessionTokenAction}
+  timeout: 25
+  logRetentionInDays: 14
+  iamRoleStatementsInherit: true
+  iamRoleStatementsName: ${file(resources/index.json):functions.validateSessionTokenAction}
+  iamRoleStatements: ${file(resources/iamRoleStatements/userActions/validateSessionTokenAction.yml)}
+  provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+  events:
+    - http:
+        path: /token/validate
+        method: post
         cors: true
         authorizer:
           type: COGNITO_USER_POOLS

@@ -106,11 +106,11 @@ export default class LicenseEntity
    * @returns {LicenseEntityData} - La entidad de licencia limpia
    */
   getClean(input: LicenseEntityTableItemType): LicenseEntityData {
-    return {
-      license_id: input.license_id,
-      user_id: input.user_id,
-      license_data: input.license_data,
-      license_type: input.license_type,
-    };
+    const cleaned: any = { ...input };
+    delete cleaned.pk;
+    delete cleaned.sk;
+    delete cleaned.type;
+
+    return cleaned;
   }
 }

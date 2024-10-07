@@ -34,3 +34,5 @@ export type UsersServiceGetUserInputType = {
 
 export type UsersServiceUpdateUserInputType = UsersServiceGetUserInputType &
   UserModifiableData;
+
+export type UsersServiceValidateSessionTokenInputType = { token: string };

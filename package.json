@@ -22,6 +22,7 @@
     "dynamoose": "^3.2.0",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0",
     "lodash": "^4.17.21",
     "rebased": "^1.1.2",
     "reflect-metadata": "^0.2.2",
