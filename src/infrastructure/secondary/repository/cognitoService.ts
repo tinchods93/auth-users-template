@@ -240,8 +240,6 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
       .replace('<region>', process.env.REGION as string)
       .replace('<userPoolId>', process.env.USER_POOL_ID as string);
 
-    console.log('MARTIN_LOG=> signingUrl: ', signingUrl);
-
     const client = new JwksClient({
       jwksUri: signingUrl,
     });
@@ -250,28 +248,17 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
       complete: true,
     }) as any;
 
-    console.log('MARTIN_LOG=> decodedToken: ', decodedToken);
-
     const publicKey = (
       await client.getSigningKey(decodedToken.header.kid)
     )?.getPublicKey();
 
-    // function getKey(header, callback) {
-    //   ;
-    // }
-    console.log('MARTIN_LOG=>> PublicKey: ', publicKey);
-
-    const isValidSigninKey = jwt.verify(token, publicKey);
-
-    console.log('MARTIN_LOG=>> isValidSigninKey: ', isValidSigninKey);
+    jwt.verify(token, publicKey);
 
     const verified = jwt.verify(token, publicKey, {
       algorithms: ['RS256'],
       issuer: decodedToken.payload.iss,
       audience: decodedToken.payload.aud,
     });
-
-    console.log('MARTIN_LOG=> verified: ', verified);
 
     return verified;
   }
