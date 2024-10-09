@@ -5,18 +5,19 @@ import { HandlerCommandType } from '../../../infrastructure/primary/handlers/typ
 import ZodSchemaValidation from '../../schemas/ZodSchema';
 import ActionResponse from '../../entities/actionResponse';
 import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
-import LicenseServiceInterface, {
-  LICENSE_SERVICE_TOKEN,
-} from '../../../domain/services/licenseService/interfaces/LicenseServiceInterface';
+
 import { revokeLicenseActionInputSchema } from '../../schemas/zodSchemas/licenseActions/revokeLicenseActionInputSchema';
+import StandaloneLicenseServiceInterface, {
+  STANDALONE_LICENSE_SERVICE_TOKEN,
+} from '../../../domain/services/licenseService/interfaces/LicenseServiceAloneInterface';
 
 @injectable()
 export default class RevokeLicenseAction implements ApplicationActionInterface {
   private actionResponse: ActionResponseInterface;
 
   constructor(
-    @inject(LICENSE_SERVICE_TOKEN)
-    private licenseService: LicenseServiceInterface
+    @inject(STANDALONE_LICENSE_SERVICE_TOKEN)
+    private standaloneLicenseService: StandaloneLicenseServiceInterface
   ) {
     this.actionResponse = new ActionResponse();
   }
@@ -26,7 +27,9 @@ export default class RevokeLicenseAction implements ApplicationActionInterface {
       const payload = new ZodSchemaValidation(
         revokeLicenseActionInputSchema
       ).validate(commandPayload.body);
-      const response = await this.licenseService.revokeLicense(payload);
+      const response = await this.standaloneLicenseService.revokeLicense(
+        payload
+      );
 
       return this.actionResponse.success({
         statusCode: StatusCodes.OK,

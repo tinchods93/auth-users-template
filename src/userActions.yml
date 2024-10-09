@@ -106,6 +106,34 @@ getUserProfile:
           type: COGNITO_USER_POOLS
           authorizerId: { Ref: ApiGatewayAuthorizer }
 
+# getAllUsersProfile:
+#   handler: src/infrastructure/primary/handlers/users/getAllUsersProfile.handler
+#   description: 'Get user profile user action'
+#   name: ${file(resources/index.json):functions.getAllUsersProfileUserAction}
+#   timeout: 25
+#   logRetentionInDays: 14
+#   iamRoleStatementsInherit: true
+#   iamRoleStatementsName: ${file(resources/index.json):functions.getAllUsersProfileUserAction}
+#   iamRoleStatements: ${file(resources/iamRoleStatements/userActions/getUserProfileUserAction.yml)}
+#   provisionedConcurrency: ${self:custom.provisionedConcurrency.${self:provider.stage}, 0}
+#   environment:
+#     REQUIRED_TOKEN_SCOPES: 'read.${self:custom.projectName}_users_api'
+#   events:
+#     - http:
+#         path: /api/users/profile/all
+#         method: get
+#         cors: true
+#         authorizer:
+#           type: CUSTOM
+#           authorizerId: { Ref: Authorizer }
+#     - http:
+#         path: /users/profile/all
+#         method: get
+#         cors: true
+#         authorizer:
+#           type: COGNITO_USER_POOLS
+#           authorizerId: { Ref: ApiGatewayAuthorizer }
+
 updateUserAction:
   handler: src/infrastructure/primary/handlers/users/updateUser.handler
   description: 'Get user profile user action'

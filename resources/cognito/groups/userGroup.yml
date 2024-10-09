@@ -4,7 +4,7 @@ Resources:
   UserPoolGroupUser:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
-      GroupName: User
+      GroupName: user
       UserPoolId: !Ref UserPool
       RoleArn: !GetAtt UserRole.Arn
 

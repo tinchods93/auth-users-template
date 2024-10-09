@@ -5,18 +5,18 @@ import { HandlerCommandType } from '../../../infrastructure/primary/handlers/typ
 import ZodSchemaValidation from '../../schemas/ZodSchema';
 import ActionResponse from '../../entities/actionResponse';
 import { ActionResponseInterface } from '../../entities/interfaces/actionResponseInterface';
-import LicenseServiceInterface, {
-  LICENSE_SERVICE_TOKEN,
-} from '../../../domain/services/licenseService/interfaces/LicenseServiceInterface';
 import { getLicenseActionInputSchema } from '../../schemas/zodSchemas/licenseActions/getLicenseActionInputSchema';
+import StandaloneLicenseServiceInterface, {
+  STANDALONE_LICENSE_SERVICE_TOKEN,
+} from '../../../domain/services/licenseService/interfaces/LicenseServiceAloneInterface';
 
 @injectable()
 export default class GetLicenseAction implements ApplicationActionInterface {
   private actionResponse: ActionResponseInterface;
 
   constructor(
-    @inject(LICENSE_SERVICE_TOKEN)
-    private licenseService: LicenseServiceInterface
+    @inject(STANDALONE_LICENSE_SERVICE_TOKEN)
+    private standaloneLicenseService: StandaloneLicenseServiceInterface
   ) {
     this.actionResponse = new ActionResponse();
   }
@@ -27,7 +27,7 @@ export default class GetLicenseAction implements ApplicationActionInterface {
         getLicenseActionInputSchema
       ).validate(commandPayload.query);
 
-      const response = await this.licenseService.getLicense({
+      const response = await this.standaloneLicenseService.getLicense({
         licenseId: payload.license_id,
         userId: payload.user_id,
       });

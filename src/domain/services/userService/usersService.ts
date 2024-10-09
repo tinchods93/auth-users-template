@@ -37,6 +37,9 @@ import { TableServiceInterface } from '../../../infrastructure/secondary/service
 import { ErrorCodesEnum } from '../../../commons/errors/enums/errorCodesEnum';
 import { ErrorMessagesEnum } from '../../../commons/errors/enums/errorMessagesEnum';
 import UserServiceException from '../errors/userServiceException';
+import StandaloneLicenseServiceInterface, {
+  STANDALONE_LICENSE_SERVICE_TOKEN,
+} from '../licenseService/interfaces/LicenseServiceAloneInterface';
 
 const tableName = process.env.USERS_LICENSES_TABLE_NAME as string;
 
@@ -53,7 +56,9 @@ export default class UsersService implements UsersServiceInterface {
     private cognitoRepository: CognitoRepositoryInterface,
     @inject(TABLE_REPOSITORY_TOKEN)
     private tableRepository: TableRepositoryInterface,
-    @inject(USER_ENTITY_TOKEN) private userEntity: UserEntityInterface
+    @inject(USER_ENTITY_TOKEN) private userEntity: UserEntityInterface,
+    @inject(STANDALONE_LICENSE_SERVICE_TOKEN)
+    private licenseStandaloneService: StandaloneLicenseServiceInterface
   ) {
     this.tableService = this.tableRepository.getInstance(
       this.userEntity.getTableSchema(),
@@ -254,23 +259,32 @@ export default class UsersService implements UsersServiceInterface {
    * @throws {UserServiceException} - Si ocurre un error al obtener el perfil del usuario.
    */
   async getUserProfile(
-    payload: UsersServiceGetUserInputType,
+    payload?: UsersServiceGetUserInputType,
     returnRaw?: boolean
-  ): Promise<UserEntityTableItem | UserPublicData> {
+  ): Promise<
+    | UserEntityTableItem
+    | UserPublicData
+    | UserEntityTableItem[]
+    | UserPublicData[]
+  > {
     try {
-      if (!payload.user_id) {
-        throw new Error(ErrorMessagesEnum.USER_ID_REQUIRED);
-      }
-      const { user_id: userId } = payload;
-      const response = await this.tableService.query({
-        query: {
-          type: {
-            eq: EntitiesEnum.USER,
-          },
-          user_id: {
-            eq: userId,
-          },
+      let query: any = {
+        type: {
+          eq: EntitiesEnum.USER,
         },
+      };
+
+      if (payload?.user_id) {
+        query = {
+          ...query,
+          user_id: {
+            eq: payload.user_id,
+          },
+        };
+      }
+
+      const response = await this.tableService.query({
+        query,
         options: {
           using_index: TableGsiEnum.TYPE,
         },
@@ -280,13 +294,43 @@ export default class UsersService implements UsersServiceInterface {
         throw new Error(ErrorMessagesEnum.USER_NOT_FOUND);
       }
 
-      const [user] = response;
+      if (payload?.user_id) {
+        const [user] = response;
 
-      if (returnRaw) {
-        return user as UserEntityTableItem;
+        if (user.license_id) {
+          const license = await this.licenseStandaloneService.getLicense({
+            licenseId: user.license_id,
+          });
+          user.license = license;
+        }
+
+        if (returnRaw) {
+          return user as UserEntityTableItem;
+        }
+
+        return this.userEntity.getClean(user);
       }
 
-      return this.userEntity.getClean(user);
+      const users = await Promise.allSettled(
+        response.map(async (user) => {
+          if (user.license_id) {
+            const license = await this.licenseStandaloneService.getLicense({
+              licenseId: user.license_id,
+            });
+            user.license = license;
+          }
+
+          if (returnRaw) {
+            return user as UserEntityTableItem;
+          }
+
+          return this.userEntity.getClean(user);
+        })
+      ).then((fulfilled) =>
+        fulfilled.filter((p) => p.status === 'fulfilled').map((p) => p.value)
+      );
+
+      return users;
     } catch (error) {
       throw UserServiceException.handle({
         message: error.message,
@@ -298,9 +342,56 @@ export default class UsersService implements UsersServiceInterface {
     }
   }
 
+  async getAllUsersProfile(
+    returnRaw?: boolean
+  ): Promise<UserEntityTableItem[] | UserPublicData[]> {
+    try {
+      const response = await this.tableService.query({
+        query: {
+          type: {
+            eq: EntitiesEnum.USER,
+          },
+        },
+        options: {
+          using_index: TableGsiEnum.TYPE,
+        },
+      });
+
+      if (!response?.length) {
+        throw new Error(ErrorMessagesEnum.USER_NOT_FOUND);
+      }
+
+      const users = await Promise.all(
+        response.map(async (user) => {
+          if (user.license_id) {
+            const license = await this.licenseStandaloneService.getLicense({
+              licenseId: user.license_id,
+            });
+            user.license = license;
+          }
+          if (returnRaw) {
+            return user as UserEntityTableItem;
+          }
+
+          return this.userEntity.getClean(user);
+        })
+      );
+
+      return users;
+    } catch (error) {
+      throw UserServiceException.handle({
+        message: error.message,
+        code: ErrorCodesEnum.USER_GET_FAILED,
+        status: error.status ?? StatusCodes.CONFLICT,
+        error,
+      });
+    }
+  }
+
   async updateUserProfile(
     payload: UsersServiceUpdateUserInputType
   ): Promise<UserPublicData> {
+    console.log('MARTIN_LOG=> updateUserProfile -> payload', payload);
     try {
       const { user_id: userId, ...payloadForUpdate } = payload;
 
@@ -323,9 +414,23 @@ export default class UsersService implements UsersServiceInterface {
         ...existingPayload
       } = existingUser;
 
-      const newPayload = merge(existingPayload, payloadForUpdate);
+      console.log(
+        'MARTIN_LOG=> updateUserProfile -> existingUser',
+        existingUser
+      );
+      const newPayload = merge(
+        JSON.parse(JSON.stringify(existingPayload)),
+        payloadForUpdate
+      );
+
       if (payload.role) {
-        await Promise.allSettled([
+        newPayload.role = newPayload.role?.toLowerCase();
+        console.log('MARTIN_LOG=> updateUserProfile -> newPayload', {
+          existingPayload,
+          newPayload,
+        });
+
+        const res = await Promise.allSettled([
           this.cognitoRepository.addUserToGroup(
             newPayload.username,
             RolesEnum[newPayload.role.toUpperCase()]
@@ -334,7 +439,18 @@ export default class UsersService implements UsersServiceInterface {
             existingPayload.username,
             RolesEnum[existingPayload.role.toUpperCase()]
           ),
-        ]);
+          this.cognitoRepository.updateCustomAttribute(
+            newPayload.username,
+            'role',
+            newPayload.role
+          ),
+        ]).catch((error) => {
+          throw new Error(
+            `${ErrorCodesEnum.USER_UPDATE_FAILED}. ${error.message}`
+          );
+        });
+
+        console.log('MARTIN_LOG=> updateUserProfile -> res', res);
       }
       const response = await this.tableService.update({
         key: {

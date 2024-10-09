@@ -9,4 +9,9 @@
 - Effect: Allow
   Action:
     - cognito-idp:AdminGetUser
+    - cognito-idp:AdminCreateUser
+    - cognito-idp:AdminAddUserToGroup
+    - cognito-idp:AdminRemoveUserFromGroup
+    - cognito-idp:AdminSetUserPassword
+    - cognito-idp:AdminUpdateUserAttributes 
   Resource: !GetAtt UserPool.Arn

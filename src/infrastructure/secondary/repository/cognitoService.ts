@@ -18,6 +18,8 @@ import {
   AdminGetUserCommandOutput,
   AdminRemoveUserFromGroupCommand,
   AdminRemoveUserFromGroupCommandOutput,
+  AdminUpdateUserAttributesCommandOutput,
+  AdminUpdateUserAttributesCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoRepositoryInterface } from './interfaces/cognitoServiceInterface';
 import {
@@ -117,7 +119,10 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     }).input;
 
     const response = await this.cognito.adminRemoveUserFromGroup(command);
-
+    console.log(
+      'MARTIN_LOG=> removeUserFromGroup -> response',
+      JSON.stringify({ response })
+    );
     return response;
   }
 
@@ -261,5 +266,26 @@ export default class CognitoRepository implements CognitoRepositoryInterface {
     });
 
     return verified;
+  }
+
+  async updateCustomAttribute(
+    username: string,
+    attributeName: string,
+    attributeValue: string
+  ): Promise<AdminUpdateUserAttributesCommandOutput> {
+    const command = new AdminUpdateUserAttributesCommand({
+      UserPoolId: USER_POOL_ID,
+      Username: username,
+      UserAttributes: [
+        {
+          Name: `custom:${attributeName}`,
+          Value: attributeValue,
+        },
+      ],
+    });
+
+    const response = await this.client.send(command);
+
+    return response;
   }
 }

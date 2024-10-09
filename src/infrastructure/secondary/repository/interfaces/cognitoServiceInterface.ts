@@ -4,6 +4,7 @@ import {
   AdminInitiateAuthCommandOutput,
   AdminRemoveUserFromGroupCommandOutput,
   AdminRespondToAuthChallengeCommandOutput,
+  AdminUpdateUserAttributesCommandOutput,
   ConfirmForgotPasswordCommandOutput,
   ForgotPasswordCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -43,4 +44,9 @@ export interface CognitoRepositoryInterface {
     group: string
   ): Promise<AdminRemoveUserFromGroupCommandOutput>;
   validateSessionToken(token: string): Promise<any>;
+  updateCustomAttribute(
+    username: string,
+    attributeName: string,
+    attributeValue: string
+  ): Promise<AdminUpdateUserAttributesCommandOutput>;
 }

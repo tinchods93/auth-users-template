@@ -16,6 +16,7 @@
         "forgotPasswordUserAction": "${self:custom.stackPrefix}-forgotPasswordUserAction",
         "confirmForgotPasswordUserAction": "${self:custom.stackPrefix}-confirmForgotPasswordUserAction",
         "getUserProfileUserAction": "${self:custom.stackPrefix}-getUserProfileUserAction",
+        "getAllUsersProfileUserAction": "${self:custom.stackPrefix}-getAllUsersProfileUserAction",
         "updateUserAction": "${self:custom.stackPrefix}-updateUserAction",
         "createLicenseAction": "${self:custom.stackPrefix}-createLicenseAction",
         "getLicenseByUserIdAction": "${self:custom.stackPrefix}-getLicenseByUserIdAction",

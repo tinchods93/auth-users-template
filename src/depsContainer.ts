@@ -40,6 +40,10 @@ import LicenseServiceInterface, {
   LICENSE_SERVICE_TOKEN,
 } from './domain/services/licenseService/interfaces/LicenseServiceInterface';
 import LicenseService from './domain/services/licenseService/licenseService';
+import StandaloneLicenseServiceInterface, {
+  STANDALONE_LICENSE_SERVICE_TOKEN,
+} from './domain/services/licenseService/interfaces/LicenseServiceAloneInterface';
+import StandaloneLicenseService from './domain/services/licenseService/licenseServiceAlone';
 
 // application
 
@@ -50,6 +54,12 @@ depsContainer.register<UsersServiceInterface>(USERS_SERVICE_TOKEN, {
 depsContainer.register<LicenseServiceInterface>(LICENSE_SERVICE_TOKEN, {
   useClass: LicenseService,
 });
+depsContainer.register<StandaloneLicenseServiceInterface>(
+  STANDALONE_LICENSE_SERVICE_TOKEN,
+  {
+    useClass: StandaloneLicenseService,
+  }
+);
 depsContainer.register<LicenseEntityInterface>(LICENSE_ENTITY_TOKEN, {
   useClass: LicenseEntity,
 });

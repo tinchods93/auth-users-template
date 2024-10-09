@@ -26,9 +26,17 @@ export interface UsersServiceInterface {
     payload: UserServiceConfirmForgotPasswordInputType
   ): Promise<any>;
   getUserProfile(
-    payload: UsersServiceGetUserInputType,
+    payload?: UsersServiceGetUserInputType,
     returnRaw?: boolean
-  ): Promise<UserEntityTableItem | UserPublicData>;
+  ): Promise<
+    | UserEntityTableItem
+    | UserPublicData
+    | UserEntityTableItem[]
+    | UserPublicData[]
+  >;
+  getAllUsersProfile(
+    returnRaw?: boolean
+  ): Promise<UserEntityTableItem[] | UserPublicData[]>;
   updateUserProfile(
     payload: UsersServiceUpdateUserInputType
   ): Promise<UserPublicData>;
